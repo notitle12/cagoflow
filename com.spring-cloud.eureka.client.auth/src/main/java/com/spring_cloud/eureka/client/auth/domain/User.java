@@ -27,11 +27,17 @@ public class User {
     private UserRoleEnum role;
 
     // 유저 생성 메서드
-    public static User create(String username, String password, UserRoleEnum role) {
-        return User.builder()
-                .username(username)
-                .password(password)
-                .role(role)
-                .build();
+//    public static User create(String username, String password, UserRoleEnum role) {
+//        return User.builder()
+//                .username(username)
+//                .password(password)
+//                .role(role)
+//                .build();
+//    }
+
+    public User(String username, String password, UserRoleEnum role) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
     }
 }
