@@ -1,6 +1,5 @@
 package com.spring_cloud.eureka.client.auth.application.dto;
 
-import com.spring_cloud.eureka.client.auth.domain.UserRoleEnum;
 import lombok.*;
 
 @Getter

@@ -46,12 +46,6 @@ public class WebSecurityConfig {
         return filter;
     }
 
-    // JWT 인증 필터를 생성
-//    @Bean
-//    public JwtAuthorizationFilter jwtAuthorizationFilter() {
-//        return new JwtAuthorizationFilter(jwtUtil, userDetailsService);
-//    }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // CSRF 설정

@@ -2,7 +2,6 @@ package com.spring_cloud.eureka.client.auth.application;
 
 import com.spring_cloud.eureka.client.auth.application.dto.LoginRequestDto;
 import com.spring_cloud.eureka.client.auth.application.dto.SignUpRequestDto;
-import com.spring_cloud.eureka.client.auth.application.security.JwtUtil;
 import com.spring_cloud.eureka.client.auth.domain.User;
 import com.spring_cloud.eureka.client.auth.domain.UserRepository;
 import com.spring_cloud.eureka.client.auth.domain.UserRoleEnum;

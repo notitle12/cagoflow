@@ -25,8 +25,6 @@ public class UserDetailsImpl implements UserDetails {
         return user.getPassword();
     }
 
-    // UserDetails 인터페이스의 필수 메서드인 getUsername() 을 기준으로 사용자를 찾기 때문에 메서드명은 변경 불가하다.
-    // 따라서 메서즈명은 getUsername() 이지만 retyrn 값은 user.getEmail() 로 사용한다.
     @Override
     public String getUsername() {
         return user.getUsername();
