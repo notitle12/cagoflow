@@ -47,19 +47,19 @@ public class AuthController {
     }
 
     // 로그인
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto) {
-        try {
-            boolean isAuthenticated = authService.login(loginRequestDto);
-            if (isAuthenticated) {
-                // JWT 토큰 생성
-                AuthResponseDto authResponseDto = authService.createAccessToken(loginRequestDto.getUsername());
-                return ResponseEntity.ok(authResponseDto);
-            } else {
-                return ResponseEntity.status(401).body("Invalid credentials");
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Login failed");
-        }
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto) {
+//        try {
+//            boolean isAuthenticated = authService.login(loginRequestDto);
+//            if (isAuthenticated) {
+//                // JWT 토큰 생성
+//                AuthResponseDto authResponseDto = authService.createAccessToken(loginRequestDto.getUsername());
+//                return ResponseEntity.ok(authResponseDto);
+//            } else {
+//                return ResponseEntity.status(401).body("Invalid credentials");
+//            }
+//        } catch (Exception e) {
+//            return ResponseEntity.status(500).body("Login failed");
+//        }
+//    }
 }

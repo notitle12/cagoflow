@@ -28,6 +28,10 @@ ext {
 }
 
 dependencies {
+	// spring security 추가
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// jwt추가
 	implementation 'io.jsonwebtoken:jjwt:0.12.6'
 	
 	implementation 'org.springframework.boot:spring-boot-starter-web'
