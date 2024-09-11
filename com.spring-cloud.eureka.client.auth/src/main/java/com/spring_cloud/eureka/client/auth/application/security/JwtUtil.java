@@ -7,13 +7,17 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
+@Slf4j
 @Component
 public class JwtUtil {
     // Header KEY 값
@@ -46,10 +50,13 @@ public class JwtUtil {
         Date now = new Date(); // 현재 시간
         Date expirationDate = new Date(now.getTime() + TOKEN_TIME);
 
+        // JWT Claims 확인 로그 추가
+        log.info("JWT Claims - userId: {}, username: {}, role: {}", userId, username, role);
+
         return BEARER_PREFIX +
                 Jwts.builder()
+                        .setSubject(username) // 사용자 식별자값(ID)
                         .claim(USER_ID_KEY, userId)
-                        .claim("username", username)
                         .claim(AUTHORIZATION_KEY, role)
                         .issuer(issuer)
                         .issuedAt(now)
@@ -77,5 +84,17 @@ public class JwtUtil {
         }
     }
 
+    // header 에서 JWT 가져오기
+    public String getJwtFromHeader(HttpServletRequest request) {
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
 
+    // 토큰에서 사용자 정보 가져오기
+    public Claims getUserInfoFromToken(String token) {
+        return Jwts.parser().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    }
 }

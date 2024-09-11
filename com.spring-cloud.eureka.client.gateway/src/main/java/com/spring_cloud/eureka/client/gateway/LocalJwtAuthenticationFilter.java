@@ -102,6 +102,4 @@ public class LocalJwtAuthenticationFilter implements GlobalFilter {
     public Claims getUserInfoFromToken(String token, SecretKey key) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
-
-
 }

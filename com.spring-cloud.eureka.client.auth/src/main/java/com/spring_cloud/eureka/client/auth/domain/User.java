@@ -26,6 +26,9 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
+    @OneToOne(mappedBy = "user")
+    private DeliveryManager deliveryManager;
+
     public User(String username, String password, UserRoleEnum role) {
         this.username = username;
         this.password = password;

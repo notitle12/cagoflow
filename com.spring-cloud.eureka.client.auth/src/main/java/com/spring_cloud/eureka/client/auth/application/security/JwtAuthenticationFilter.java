@@ -44,11 +44,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal();
+        log.info("Authenticated UserDetails: {}", userDetails); // 추가된 로그
+
         // 인증이 성공한 경우, 인증된 사용자의  id, 이메일과 역할을 가져옴
         Long userId = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getUserId();
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getUsername();
         UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
-
 
         //JWT토큰 생성
         String token = jwtUtil.createToken(userId, username, role);

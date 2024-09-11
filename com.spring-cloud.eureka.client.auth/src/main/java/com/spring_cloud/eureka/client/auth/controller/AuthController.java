@@ -1,19 +1,17 @@
 package com.spring_cloud.eureka.client.auth.controller;
 
 import com.spring_cloud.eureka.client.auth.application.AuthService;
-import com.spring_cloud.eureka.client.auth.application.dto.AuthResponseDto;
-import com.spring_cloud.eureka.client.auth.application.dto.LoginRequestDto;
 import com.spring_cloud.eureka.client.auth.application.dto.SignUpRequestDto;
+import com.spring_cloud.eureka.client.auth.application.dto.UserInfoResponseDto;
+import com.spring_cloud.eureka.client.auth.application.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -44,5 +42,14 @@ public class AuthController {
         }
 
         return ResponseEntity.ok("회원가입 성공");
+    }
+
+    // 현재 로그인한 사용자의 정보 조회
+    @GetMapping("/users/me")
+    public ResponseEntity<UserInfoResponseDto> getCurrentUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        String username = userDetails.getUser().getUsername();
+
+        UserInfoResponseDto userInfo = authService.getUserInfo(username);
+        return ResponseEntity.ok(userInfo);
     }
 }

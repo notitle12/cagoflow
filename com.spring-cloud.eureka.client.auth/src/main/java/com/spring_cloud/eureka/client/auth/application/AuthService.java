@@ -2,6 +2,7 @@ package com.spring_cloud.eureka.client.auth.application;
 
 import com.spring_cloud.eureka.client.auth.application.dto.LoginRequestDto;
 import com.spring_cloud.eureka.client.auth.application.dto.SignUpRequestDto;
+import com.spring_cloud.eureka.client.auth.application.dto.UserInfoResponseDto;
 import com.spring_cloud.eureka.client.auth.domain.User;
 import com.spring_cloud.eureka.client.auth.domain.UserRepository;
 import com.spring_cloud.eureka.client.auth.domain.UserRoleEnum;
@@ -93,5 +94,12 @@ public class AuthService {
             return passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword());
         }
         return false;
+    }
+
+    // 현재 로그인한 사용자 정보 조회
+    public UserInfoResponseDto getUserInfo(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        return new UserInfoResponseDto(user.getUsername(), user.getRole());
     }
 }
