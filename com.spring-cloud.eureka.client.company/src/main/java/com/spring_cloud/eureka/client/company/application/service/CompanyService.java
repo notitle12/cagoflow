@@ -1,12 +1,16 @@
 package com.spring_cloud.eureka.client.company.application.service;
 
 
+import com.spring_cloud.eureka.client.company.application.dto.CompanyResponseDto;
+import com.spring_cloud.eureka.client.company.domain.model.Company;
 import com.spring_cloud.eureka.client.company.domain.service.CompanyDomainService;
 import com.spring_cloud.eureka.client.company.infrastructure.client.HubClient;
 import com.spring_cloud.eureka.client.company.infrastructure.client.HubResponse;
 import com.spring_cloud.eureka.client.company.presentation.request.CompanyRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +35,11 @@ public class CompanyService {
                 companyRequest.getCompanyAddress(),
                 companyRequest.getCompanyType()
         );
+    }
+
+    public CompanyResponseDto getCompanyById(UUID companyId) {
+        Company company = companyDomainService.getCompanyById(companyId);
+        return CompanyResponseDto.fromEntity(company);
     }
 
 

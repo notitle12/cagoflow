@@ -1,14 +1,14 @@
 package com.spring_cloud.eureka.client.company.presentation.controller;
 
 
+import com.spring_cloud.eureka.client.company.application.dto.CompanyResponseDto;
 import com.spring_cloud.eureka.client.company.application.service.CompanyService;
 import com.spring_cloud.eureka.client.company.presentation.request.CompanyRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +21,11 @@ public class CompanyController {
     public ResponseEntity<Void> createCompany(@RequestBody CompanyRequest companyRequest) {
         companyService.createCompany(companyRequest);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{companyId}")
+    public ResponseEntity<CompanyResponseDto> getCompanyById(@PathVariable("companyId") UUID companyId) {
+        return ResponseEntity.ok(companyService.getCompanyById(companyId));
     }
 
 }

@@ -35,4 +35,11 @@ public class CompanyDomainService {
         // 저장
         companyRepository.save(company);
     }
+
+    @Transactional(readOnly = true)
+    public Company getCompanyById(UUID companyId) {
+        return companyRepository.findById(companyId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 업체입니다."));
+    }
+
 }
