@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -35,17 +36,29 @@ public class HubService {
     }
 
     @Transactional
-    public HubRouteResponseDTO addRouteToHub(UUID hubId, HubRouteRequestDTO hubRouteRequestDTO) {
+    public HubRouteResponseDTO addRouteToHub(HubRouteRequestDTO hubRouteRequestDTO) {
+
+        Hub startHub = hubDomainService.getHubById(hubRouteRequestDTO.getStartHubId())
+                .orElseThrow(() -> new RuntimeException("Start Hub not found"));
+        Hub endHub = hubDomainService.getHubById(hubRouteRequestDTO.getEndHubId())
+                .orElseThrow(() -> new RuntimeException("End Hub not found"));
+
+        //hubroute 객체 생성
         HubRoute hubRoute = HubRoute.builder()
-                .startHub(hubDomainService.getHubById(hubRouteRequestDTO.getStartHubId())
-                        .orElseThrow(() -> new RuntimeException("Start Hub not found")))
-                .endHub(hubDomainService.getHubById(hubRouteRequestDTO.getEndHubId())
-                        .orElseThrow(() -> new RuntimeException("End Hub not found")))
+                .startHub(startHub)
+                .endHub(endHub)
                 .estimatedTime(hubRouteRequestDTO.getEstimatedTime())
                 .routeDetails(hubRouteRequestDTO.getRouteDetails())
                 .build();
 
-        Hub updatedHub = hubDomainService.addRouteToHub(hubId, hubRoute);
+        //출발 hub와 도착 hub에 각각 경로 추가
+        startHub.addRoute(hubRoute);
+        endHub.addRoute(hubRoute);
+
+        //db 저장
+        hubDomainService.saveHub(startHub);
+        hubDomainService.saveHub(endHub);
+
         return toHubRouteResponseDTO(hubRoute);
     }
 
@@ -65,7 +78,14 @@ public class HubService {
     public List<HubRouteResponseDTO> getHubRoutes(UUID hubId) {
         Hub hub = hubDomainService.getHubById(hubId)
                 .orElseThrow(() -> new RuntimeException("Hub not found"));
-        return hub.getRoutes().stream()
+
+        // Start Hub와 End Hub 모두로부터 Route를 가져옴.
+        List<HubRoute> allRoutes = new ArrayList<>();
+        allRoutes.addAll(hub.getStartRoutes());
+        allRoutes.addAll(hub.getEndRoutes());
+
+        return allRoutes.stream()
+                .distinct() // 중복된 Route를 제거합니다.
                 .map(this::toHubRouteResponseDTO)
                 .collect(Collectors.toList());
     }
