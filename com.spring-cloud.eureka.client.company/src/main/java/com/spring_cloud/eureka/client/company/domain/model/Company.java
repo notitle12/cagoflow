@@ -8,10 +8,10 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(access = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "p_companies")
-public class Company {
+@Table(name = "p_company")
+public class Company extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -24,7 +24,18 @@ public class Company {
 
     private UUID hubId; // 허브 ID
 
+    private Long userId; // 유저 ID
+
     private String companyAddress;
 
+    public static Company create(String companyName, UUID hubId, Long userId, String companyAddress, CompanyType companyType) {
+        return Company.builder()
+                .companyName(companyName)
+                .hubId(hubId)
+                .userId(userId)
+                .companyAddress(companyAddress)
+                .companyType(companyType)
+                .build();
+    }
 
 }
