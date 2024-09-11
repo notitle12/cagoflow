@@ -1,5 +1,15 @@
 spring:
   application:
     name: HubService
+  datasource:
+    url: jdbc:postgresql://localhost:25437/hub
+    username: hub
+    password: hub
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
   config:
     import: optional:configserver:http://sparta24:sparta24@localhost:9000
