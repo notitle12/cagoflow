@@ -30,24 +30,30 @@ public class HubDomainService {
         hubRepository.deleteById(hubId);
     }
 
-    @Transactional
-    public Hub addRouteToHub(UUID hubId, HubRoute hubRoute) {
-        Hub hub = hubRepository.findById(hubId)
-                .orElseThrow(() -> new RuntimeException("Hub not found"));
-
-        hub.addRoute(hubRoute);
-        return hubRepository.save(hub);
-    }
+//    @Transactional
+//    public Hub addRouteToHub(UUID hubId, HubRoute hubRoute) {
+//        Hub hub = hubRepository.findById(hubId)
+//                .orElseThrow(() -> new RuntimeException("Hub not found"));
+//
+//        hub.addRoute(hubRoute);
+//        return hubRepository.save(hub);
+//    }
 
     @Transactional
     public void removeRouteFromHub(UUID hubId, UUID routeId) {
         Hub hub = hubRepository.findById(hubId)
                 .orElseThrow(() -> new RuntimeException("Hub not found"));
 
-        HubRoute route = hub.getRoutes().stream()
+        // Hub의 startRoutes와 endRoutes에서 해당 route를 찾아옴.
+        HubRoute route = hub.getStartRoutes().stream()
                 .filter(r -> r.getId().equals(routeId))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Route not found"));
+                .orElse(
+                        hub.getEndRoutes().stream()
+                                .filter(r -> r.getId().equals(routeId))
+                                .findFirst()
+                                .orElseThrow(() -> new RuntimeException("Route not found"))
+                );
 
         hub.removeRoute(route);
         hubRepository.save(hub);
@@ -72,5 +78,9 @@ public class HubDomainService {
     @Transactional
     public void deleteHubPermanently(UUID hubId) {
         hubRepository.deleteById(hubId);
+    }
+
+    public void saveHub(Hub hub) {
+        hubRepository.save(hub);
     }
 }
