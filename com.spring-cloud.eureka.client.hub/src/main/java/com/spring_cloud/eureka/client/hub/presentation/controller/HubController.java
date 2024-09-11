@@ -26,11 +26,10 @@ public class HubController {
         return new ResponseEntity<>(hubResponseDTO, HttpStatus.CREATED);
     }
 
-    @PostMapping("/{hubId}/routes")
+    @PostMapping("/routes")
     public ResponseEntity<HubRouteResponseDTO> addRouteToHub(
-            @PathVariable UUID hubId,
             @RequestBody HubRouteRequestDTO hubRouteRequestDTO) {
-        HubRouteResponseDTO hubRouteResponseDTO = hubService.addRouteToHub(hubId, hubRouteRequestDTO);
+        HubRouteResponseDTO hubRouteResponseDTO = hubService.addRouteToHub(hubRouteRequestDTO);
         return new ResponseEntity<>(hubRouteResponseDTO, HttpStatus.CREATED);
     }
 
