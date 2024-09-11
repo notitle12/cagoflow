@@ -53,6 +53,9 @@ public class CompanyService {
         );
     }
 
+    public void deleteCompany(UUID companyId, String deleteBy) {
+        companyDomainService.deleteCompany(companyId, deleteBy);
+    }
 
     private void validateHubId(UUID hubId) {
         HubResponse hubResponse = hubClient.getHubById(hubId);

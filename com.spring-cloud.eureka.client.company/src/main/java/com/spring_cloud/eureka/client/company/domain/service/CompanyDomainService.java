@@ -38,6 +38,13 @@ public class CompanyDomainService {
         companyRepository.save(company);
     }
 
+    @Transactional
+    public void deleteCompany(UUID companyId, String deleteBy) {
+        Company company = getCompanyById(companyId);
+        company.deleteSoftly(deleteBy);
+        companyRepository.save(company);
+    }
+
     @Transactional(readOnly = true)
     public Company getCompanyById(UUID companyId) {
         return companyRepository.findById(companyId)
