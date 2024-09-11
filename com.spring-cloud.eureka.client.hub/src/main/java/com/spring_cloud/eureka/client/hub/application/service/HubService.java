@@ -4,6 +4,7 @@ import com.spring_cloud.eureka.client.hub.application.dtos.HubResponseDTO;
 import com.spring_cloud.eureka.client.hub.application.dtos.HubRouteResponseDTO;
 import com.spring_cloud.eureka.client.hub.domain.model.Hub;
 import com.spring_cloud.eureka.client.hub.domain.model.HubRoute;
+import com.spring_cloud.eureka.client.hub.domain.service.HubDomainService;
 import com.spring_cloud.eureka.client.hub.infrastructure.repository.HubRepositoryImpl;
 import com.spring_cloud.eureka.client.hub.presentation.dtos.HubRequestDTO;
 import com.spring_cloud.eureka.client.hub.presentation.dtos.HubRouteRequestDTO;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class HubService {
-    private final HubRepositoryImpl hubRepositoryImpl;
+    private final HubDomainService hubDomainService;
 
     @Transactional
     public HubResponseDTO createHub(HubRequestDTO hubRequestDTO) {
@@ -30,63 +31,49 @@ public class HubService {
                 .longitude(hubRequestDTO.getLongitude())
                 .build();
 
-        Hub savedHub = hubRepositoryImpl.save(hub);
+        Hub savedHub = hubDomainService.createHub(hub);
         return toHubResponseDTO(savedHub);
     }
 
     @Transactional
     public HubRouteResponseDTO addRouteToHub(UUID hubId, HubRouteRequestDTO hubRouteRequestDTO) {
-        Hub hub = hubRepositoryImpl.findById(hubId)
-                .orElseThrow(() -> new RuntimeException("Hub not found"));
-
         HubRoute hubRoute = HubRoute.builder()
-                .startHub(hubRepositoryImpl.findById(hubRouteRequestDTO.getStartHubId())
+                .startHub(hubDomainService.getHubById(hubRouteRequestDTO.getStartHubId())
                         .orElseThrow(() -> new RuntimeException("Start Hub not found")))
-                .endHub(hubRepositoryImpl.findById(hubRouteRequestDTO.getEndHubId())
+                .endHub(hubDomainService.getHubById(hubRouteRequestDTO.getEndHubId())
                         .orElseThrow(() -> new RuntimeException("End Hub not found")))
                 .estimatedTime(hubRouteRequestDTO.getEstimatedTime())
                 .routeDetails(hubRouteRequestDTO.getRouteDetails())
                 .build();
 
-        hub.addRoute(hubRoute);
-        hubRepositoryImpl.save(hub);
+        Hub updatedHub = hubDomainService.addRouteToHub(hubId, hubRoute);
         return toHubRouteResponseDTO(hubRoute);
     }
 
     @Transactional
     public void removeRouteFromHub(UUID hubId, UUID routeId) {
-        Hub hub = hubRepositoryImpl.findById(hubId)
-                .orElseThrow(() -> new RuntimeException("Hub not found"));
-
-        HubRoute route = hub.getRoutes().stream()
-                .filter(r -> r.getId().equals(routeId))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Route not found"));
-
-        hub.removeRoute(route);
-        hubRepositoryImpl.save(hub);
+        hubDomainService.removeRouteFromHub(hubId, routeId);
     }
 
     @Transactional(readOnly = true)
     public HubResponseDTO getHub(UUID hubId) {
-        Hub hub = hubRepositoryImpl.findById(hubId)
+        return hubDomainService.getHubById(hubId)
+                .map(this::toHubResponseDTO)
                 .orElseThrow(() -> new RuntimeException("Hub not found"));
-        return toHubResponseDTO(hub);
     }
 
     @Transactional(readOnly = true)
     public List<HubRouteResponseDTO> getHubRoutes(UUID hubId) {
-        Hub hub = hubRepositoryImpl.findById(hubId)
+        Hub hub = hubDomainService.getHubById(hubId)
                 .orElseThrow(() -> new RuntimeException("Hub not found"));
         return hub.getRoutes().stream()
                 .map(this::toHubRouteResponseDTO)
                 .collect(Collectors.toList());
     }
 
-    //hub 수정
     @Transactional
     public HubResponseDTO updateHub(UUID hubId, HubRequestDTO hubRequestDTO) {
-        Hub hub = hubRepositoryImpl.findById(hubId)
+        Hub hub = hubDomainService.getHubById(hubId)
                 .orElseThrow(() -> new RuntimeException("Hub not found"));
 
         hub.setName(hubRequestDTO.getName());
@@ -95,34 +82,23 @@ public class HubService {
         hub.setLatitude(hubRequestDTO.getLatitude());
         hub.setLongitude(hubRequestDTO.getLongitude());
 
-        Hub updatedHub = hubRepositoryImpl.save(hub);
+        Hub updatedHub = hubDomainService.createHub(hub); // 업데이트 메소드 필요 시 적절히 조정
         return toHubResponseDTO(updatedHub);
     }
 
-    //soft delete
     @Transactional
     public void deleteHub(UUID hubId) {
-        Hub hub = hubRepositoryImpl.findById(hubId)
-                .orElseThrow(() -> new RuntimeException("Hub not found"));
-        hub.setIsDelete(true);
-        hubRepositoryImpl.save(hub);
+        hubDomainService.softDeleteHub(hubId);
     }
 
-    //soft delete 복구
     @Transactional
     public void restoreHub(UUID hubId) {
-        Hub hub = hubRepositoryImpl.findById(hubId)
-                .orElseThrow(() -> new RuntimeException("Hub not found"));
-        hub.setIsDelete(false);
-        hubRepositoryImpl.save(hub);
+        hubDomainService.restoreHub(hubId);
     }
 
-    //영구 삭제
     @Transactional
     public void deleteHubPermanently(UUID hubId) {
-        Hub hub = hubRepositoryImpl.findById(hubId)
-                .orElseThrow(() -> new RuntimeException("Hub not found"));
-        hubRepositoryImpl.delete(hub);
+        hubDomainService.deleteHubPermanently(hubId);
     }
 
     private HubResponseDTO toHubResponseDTO(Hub hub) {
