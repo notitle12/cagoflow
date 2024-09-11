@@ -28,4 +28,10 @@ public class CompanyController {
         return ResponseEntity.ok(companyService.getCompanyById(companyId));
     }
 
+    @PutMapping("/{companyId}")
+    public ResponseEntity<Void> updateCompany(@PathVariable UUID companyId,
+                                              @RequestBody CompanyRequest companyRequest) {
+        companyService.updateCompany(companyId, companyRequest);
+        return ResponseEntity.ok().build();
+    }
 }

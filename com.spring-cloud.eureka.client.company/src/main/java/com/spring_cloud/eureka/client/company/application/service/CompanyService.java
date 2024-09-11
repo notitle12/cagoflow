@@ -21,10 +21,8 @@ public class CompanyService {
 
 
     public void createCompany(CompanyRequest companyRequest) {
-        HubResponse hubResponse = hubClient.getHubById(companyRequest.getHubId());
-        if (hubResponse == null) {
-            throw new IllegalArgumentException("유효하지 않은 허브 ID 입니다.");
-        }
+
+        validateHubId(companyRequest.getHubId());
 
         // userId 검증 로직 추가하기
 
@@ -42,7 +40,24 @@ public class CompanyService {
         return CompanyResponseDto.fromEntity(company);
     }
 
+    public void updateCompany(UUID companyId, CompanyRequest companyRequest) {
+
+        validateHubId(companyRequest.getHubId());
+
+        companyDomainService.updateCompany(
+                companyId,
+                companyRequest.getCompanyName(),
+                companyRequest.getHubId(),
+                companyRequest.getCompanyAddress(),
+                companyRequest.getCompanyType()
+        );
+    }
 
 
-
+    private void validateHubId(UUID hubId) {
+        HubResponse hubResponse = hubClient.getHubById(hubId);
+        if (hubResponse == null) {
+            throw new IllegalArgumentException("유효하지 않은 허브 ID 입니다.");
+        }
+    }
 }

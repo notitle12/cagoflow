@@ -38,4 +38,10 @@ public class Company extends BaseEntity {
                 .build();
     }
 
+    public void update(String companyName, UUID hubId, String companyAddress, CompanyType companyType) {
+        this.companyName = companyName;
+        this.hubId = hubId;
+        this.companyAddress = companyAddress;
+        this.companyType = companyType;
+    }
 }

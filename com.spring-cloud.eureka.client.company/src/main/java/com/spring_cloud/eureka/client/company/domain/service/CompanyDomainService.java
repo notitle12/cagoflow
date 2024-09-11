@@ -18,11 +18,7 @@ public class CompanyDomainService {
     @Transactional
     public void createCompany(String companyName, UUID hubId, Long userId, String companyAddress, CompanyType companyType) {
         // 중복 회사 검증
-
-        if (companyRepository.existsByCompanyNameAndHubId(companyName, hubId)) {
-            throw new IllegalArgumentException("같은 허브에 이미 동일한 이름이 있습니다.");
-        }
-
+        validateDuplicateCompany(companyName, hubId);
         // 회사 생성
         Company company = Company.create(
                 companyName,
@@ -31,8 +27,14 @@ public class CompanyDomainService {
                 companyAddress,
                 companyType
         );
-
         // 저장
+        companyRepository.save(company);
+    }
+
+    @Transactional
+    public void updateCompany(UUID companyId, String companyName, UUID hubId, String companyAddress, CompanyType companyType) {
+        Company company = getCompanyById(companyId);
+        company.update(companyName, hubId, companyAddress, companyType);
         companyRepository.save(company);
     }
 
@@ -42,4 +44,10 @@ public class CompanyDomainService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 업체입니다."));
     }
 
+    // 중복 회사 검증
+    private void validateDuplicateCompany(String companyName, UUID hubId) {
+        if (companyRepository.existsByCompanyNameAndHubId(companyName, hubId)) {
+            throw new IllegalArgumentException("같은 허브에 이미 동일한 이름이 있습니다.");
+        }
+    }
 }
