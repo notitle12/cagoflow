@@ -35,15 +35,28 @@ public class Hub extends BaseEntity {
     @Column(name = "longitude", nullable = false)
     private Double longitude;
 
-    @OneToMany(mappedBy = "hub", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<HubRoute> routes = new ArrayList<>();
+    @OneToMany(mappedBy = "startHub", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HubRoute> startRoutes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "endHub", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HubRoute> endRoutes = new ArrayList<>();
 
     public void addRoute(HubRoute route) {
-        this.routes.add(route);
+        if (route.getStartHub() != null && route.getStartHub().equals(this)) {
+            startRoutes.add(route);
+        }
+        if (route.getEndHub() != null && route.getEndHub().equals(this)) {
+            endRoutes.add(route);
+        }
     }
 
     public void removeRoute(HubRoute route) {
-        this.routes.remove(route);
+        if (route.getStartHub() != null && route.getStartHub().equals(this)) {
+            this.startRoutes.remove(route);
+        }
+        if (route.getEndHub() != null && route.getEndHub().equals(this)) {
+            this.endRoutes.remove(route);
+        }
     }
 
 }

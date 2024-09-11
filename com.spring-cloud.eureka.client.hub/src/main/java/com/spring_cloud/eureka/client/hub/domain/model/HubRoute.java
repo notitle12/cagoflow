@@ -31,4 +31,24 @@ public class HubRoute extends BaseEntity {
 
     @Column(name = "route_details", nullable = false)
     private String routeDetails;
+
+    public void setStartHub(Hub startHub) {
+        if (this.startHub != null) {
+            this.startHub.removeRoute(this);
+        }
+        this.startHub = startHub;
+        if (startHub != null) {
+            startHub.addRoute(this);
+        }
+    }
+
+    public void setEndHub(Hub endHub) {
+        if (this.endHub != null) {
+            this.endHub.removeRoute(this);
+        }
+        this.endHub = endHub;
+        if (endHub != null) {
+            endHub.addRoute(this);
+        }
+    }
 }
