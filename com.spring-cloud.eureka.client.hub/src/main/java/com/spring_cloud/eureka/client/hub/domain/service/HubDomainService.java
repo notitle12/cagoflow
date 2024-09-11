@@ -2,7 +2,7 @@ package com.spring_cloud.eureka.client.hub.domain.service;
 
 import com.spring_cloud.eureka.client.hub.domain.model.Hub;
 import com.spring_cloud.eureka.client.hub.domain.model.HubRoute;
-import com.spring_cloud.eureka.client.hub.domain.repository.HubRepository;
+import com.spring_cloud.eureka.client.hub.infrastructure.repository.HubRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

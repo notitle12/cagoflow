@@ -5,7 +5,6 @@ import com.spring_cloud.eureka.client.hub.application.dtos.HubRouteResponseDTO;
 import com.spring_cloud.eureka.client.hub.domain.model.Hub;
 import com.spring_cloud.eureka.client.hub.domain.model.HubRoute;
 import com.spring_cloud.eureka.client.hub.domain.service.HubDomainService;
-import com.spring_cloud.eureka.client.hub.infrastructure.repository.HubRepositoryImpl;
 import com.spring_cloud.eureka.client.hub.presentation.dtos.HubRequestDTO;
 import com.spring_cloud.eureka.client.hub.presentation.dtos.HubRouteRequestDTO;
 import lombok.RequiredArgsConstructor;
