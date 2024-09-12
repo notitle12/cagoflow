@@ -58,17 +58,21 @@ public class AuthController {
 //        UserInfoResponseDto userInfo = authService.getUserInfo(username);
 //        return ResponseEntity.ok(userInfo);
 //    }
+    // 현재 로그인한 사용자의 정보 조회
     @GetMapping("/users/me")
     public ResponseEntity<UserInfoResponseDto> getCurrentUserInfo() {
+        // SecurityContext에서 인증 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetailsImpl)) {
-            throw new RuntimeException("UserDetails is not available");
+        System.out.println(authentication);
+        // 인증 정보가 없거나 principal이 String이 아닌 경우 예외 처리
+        if (authentication == null || !(authentication.getPrincipal() instanceof String)) {
+            throw new RuntimeException("Authentication details are not available");
         }
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        String username = userDetails.getUsername();
+        // 인증된 사용자의 이름 가져오기
+        String username = (String) authentication.getPrincipal();
 
+        // 사용자 정보 조회
         UserInfoResponseDto userInfo = authService.getUserInfo(username);
         return ResponseEntity.ok(userInfo);
     }

@@ -53,13 +53,14 @@ public class LocalJwtAuthenticationFilter implements GlobalFilter {
             Claims claims = getClaimsFromToken(token, key);
 
             Integer userId = claims.get("userId", Integer.class);
-            String username = claims.get("username", String.class);
+            String username = claims.getSubject();
             if (userId == null) {
                 throw new JwtException("토큰 클레임에서 UserId를 찾을 수 없습니다.");
             }
 
             addHeadersToRequest(exchange, userId, username, claims);
             log.info(userId + " " + claims.get("auth") + " 인가 통과");
+            log.info(username + " " + claims.getSubject() + " 인가 통과");
 
             return true;
         } catch (JwtException e) {
