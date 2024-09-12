@@ -1,4 +1,4 @@
-package com.spring_cloud.eureka.client.company.domain.model;
+package com.spring_cloud.eureka.client.company.domain.enums;
 
 public enum CompanyType {
     PRODUCER("생산업체"), // 생산업체

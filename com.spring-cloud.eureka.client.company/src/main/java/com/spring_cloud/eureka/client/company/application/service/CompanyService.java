@@ -7,7 +7,12 @@ import com.spring_cloud.eureka.client.company.domain.service.CompanyDomainServic
 import com.spring_cloud.eureka.client.company.infrastructure.client.HubClient;
 import com.spring_cloud.eureka.client.company.infrastructure.client.HubResponse;
 import com.spring_cloud.eureka.client.company.presentation.request.CompanyRequest;
+import com.spring_cloud.eureka.client.company.presentation.request.CompanySearch;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -57,10 +62,16 @@ public class CompanyService {
         companyDomainService.deleteCompany(companyId, deleteBy);
     }
 
+
+
     private void validateHubId(UUID hubId) {
         HubResponse hubResponse = hubClient.getHubById(hubId);
         if (hubResponse == null) {
             throw new IllegalArgumentException("유효하지 않은 허브 ID 입니다.");
         }
+    }
+
+    public Page<CompanyResponseDto> searchCompany(CompanySearch companySearch) {
+        return companyDomainService.searchCompany(companySearch).map(CompanyResponseDto::fromEntity);
     }
 }

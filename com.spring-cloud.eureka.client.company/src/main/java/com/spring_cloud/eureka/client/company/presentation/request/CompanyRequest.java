@@ -1,6 +1,6 @@
 package com.spring_cloud.eureka.client.company.presentation.request;
 
-import com.spring_cloud.eureka.client.company.domain.model.CompanyType;
+import com.spring_cloud.eureka.client.company.domain.enums.CompanyType;
 import lombok.Getter;
 import lombok.Setter;
 

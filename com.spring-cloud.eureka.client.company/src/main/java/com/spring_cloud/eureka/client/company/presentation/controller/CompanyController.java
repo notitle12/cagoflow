@@ -3,11 +3,17 @@ package com.spring_cloud.eureka.client.company.presentation.controller;
 
 import com.spring_cloud.eureka.client.company.application.dto.CompanyResponseDto;
 import com.spring_cloud.eureka.client.company.application.service.CompanyService;
+import com.spring_cloud.eureka.client.company.domain.model.Company;
 import com.spring_cloud.eureka.client.company.presentation.request.CompanyRequest;
+import com.spring_cloud.eureka.client.company.presentation.request.CompanySearch;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -40,4 +46,12 @@ public class CompanyController {
         companyService.deleteCompany(companyId, "");
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<CompanyResponseDto>> searchCompany(
+            @ModelAttribute CompanySearch companySearch) {
+        return ResponseEntity.ok(companyService.searchCompany(companySearch));
+    }
+
+
 }

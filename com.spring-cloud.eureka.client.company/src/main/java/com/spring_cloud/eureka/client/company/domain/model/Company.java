@@ -1,5 +1,6 @@
 package com.spring_cloud.eureka.client.company.domain.model;
 
+import com.spring_cloud.eureka.client.company.domain.enums.CompanyType;
 import jakarta.persistence.*;
 import lombok.*;
 
