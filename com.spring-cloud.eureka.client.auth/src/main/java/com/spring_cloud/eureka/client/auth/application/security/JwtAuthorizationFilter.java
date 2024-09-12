@@ -1,12 +1,15 @@
 package com.spring_cloud.eureka.client.auth.application.security;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -16,47 +19,45 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.security.Key;
+import java.util.Base64;
 
-@Slf4j(topic = "JWT 검증 및 인가")
+@Slf4j(topic = "JWT 인가")
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
-    private final JwtUtil jwtUtil;
-    private final JwtValidator jwtValidator;
+
+    @Value("${service.jwt.secret-key}") // Base64 Encode 한 SecretKey
+    private String secretKey;
+    private Key key;
     private final UserDetailsServiceImpl userDetailsService;
 
-    public JwtAuthorizationFilter(JwtUtil jwtUtil, JwtValidator jwtValidator, UserDetailsServiceImpl userDetailsService) {
-        this.jwtUtil = jwtUtil;
-        this.jwtValidator = jwtValidator;
+    @PostConstruct
+    public void init() {
+        byte[] bytes = Base64.getDecoder().decode(secretKey);
+        key = Keys.hmacShaKeyFor(bytes);
+    }
+
+    public JwtAuthorizationFilter(UserDetailsServiceImpl userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
-
-        //요청의 헤더에서 JWT 토큰을 추출
+        // 요청의 헤더에서 JWT 토큰을 추출
         String tokenValue = getJwtFromHeader(req);
         log.info("Extracted JWT Token from Header: {}", tokenValue); // 토큰 값 로그로 확인
 
-        //토큰이 존재하고, 그 토큰이 유효한지 확인, 유효하지 않으면 로그를 남기고 필터 체인을 중단
+        // 토큰이 존재하고, 유효한지 확인, 유효하지 않으면 로그를 남기고 필터 체인을 중단
         if (StringUtils.hasText(tokenValue)) {
             try {
-                //토큰이 유효한지 확인
-                if (!jwtValidator.validateToken(tokenValue)) {
-                    log.error("Token Error");
-                    res.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 상태 코드 설정
-                    return;
-                }
+                // JWT 검증 필터에서 검증된 토큰만 이 필터로 들어올 것입니다.
+                // 따라서, 단순히 유효성 검증을 하지 않습니다.
 
-                //토큰에서 사용자 정보(이메일 등)를 추출
-                Claims info = jwtValidator.getUserInfoFromToken(tokenValue);
+                // JWT 토큰에서 Claims 추출
+                Claims info = extractClaimsFromToken(tokenValue);
                 log.info("Extracted Claims: {}", info); // 추출된 사용자 정보 로그
 
-                //사용자 정보를 기반으로 인증을 설정, 문제가 발생하면 예외를 로그로 남기고 필터 체인을 중단
+                // 사용자 정보를 기반으로 인증을 설정
                 setAuthentication(info.getSubject());
-            } catch (ExpiredJwtException e) {
-                // 토큰이 만료된 경우
-                log.error("Expired JWT token");
-                res.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 상태 코드 설정
-                return;
             } catch (Exception e) {
                 log.error(e.getMessage());
                 res.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 상태 코드 설정
@@ -64,7 +65,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
         }
 
-        //인증이 완료된 후, 다음 필터로 요청을 전달
+        // 인증이 완료된 후, 다음 필터로 요청을 전달
         filterChain.doFilter(req, res);
     }
 
@@ -75,6 +76,15 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return bearerToken.substring(7); // "Bearer " 이후의 실제 토큰 값 추출
         }
         return null;
+    }
+
+    // JWT 토큰에서 Claims 추출
+    private Claims extractClaimsFromToken(String token) {
+        return Jwts.parser()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     // 인증 처리
@@ -93,7 +103,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     // 인증 객체 생성
-    // loadUserByUsername 는 Spring Security에서 UserDetailsService 구현체가 사용자를 찾지 못했을 때 던지는 표준 예외
     private Authentication createAuthentication(String username) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         if (userDetails == null) {

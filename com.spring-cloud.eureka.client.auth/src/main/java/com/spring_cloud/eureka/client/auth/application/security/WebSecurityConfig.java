@@ -46,8 +46,8 @@ public class WebSecurityConfig {
 
     // JWT 인증 필터를 생성
     @Bean
-    public JwtAuthorizationFilter jwtAuthorizationFilter(JwtUtil jwtUtil, JwtValidator jwtValidator, UserDetailsServiceImpl userDetailsService) {
-        return new JwtAuthorizationFilter(jwtUtil, jwtValidator, userDetailsService);
+    public JwtAuthorizationFilter jwtAuthorizationFilter() {
+        return new JwtAuthorizationFilter(userDetailsService); // secretKey는 다른 방법으로 설정
     }
 
     @Bean
