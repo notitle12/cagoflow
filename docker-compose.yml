@@ -1,38 +1,63 @@
 version: '3.8'
 
 services:
-  postgres_auth:
-    image: bitnami/postgresql:latest
-    container_name: postgres_auth
-    environment:
-      - POSTGRES_PASSWORD=mysecretpassword
-      - POSTGRES_USER=myuser
-      - POSTGRES_DB=auth
-    ports:
-      - "25432:5432"
-    volumes:
-      - postgres_auth_data:/bitnami/postgresql
+  postgresql_order:
+    image: 'bitnami/postgresql:latest'
     networks:
       - postgres_network
-
-  postgres_hub:
-    image: bitnami/postgresql:latest
-    container_name: postgres_hub
     environment:
-      - POSTGRES_PASSWORD=mysecretpassword
-      - POSTGRES_USER=myuser
-      - POSTGRES_DB=hub
+      - POSTGRESQL_USERNAME=order
+      - POSTGRESQL_PASSWORD=order
+      - POSTGRESQL_DATABASE=order
+      - POSTGRESQL_ROOT_PASSWORD=rootpassword
     ports:
-      - "25433:5432"
-    volumes:
-      - postgres_hub_data:/bitnami/postgresql
+      - "25434:5432"
+  postgresql_auth:
+    image: 'bitnami/postgresql:latest'
     networks:
       - postgres_network
+    environment:
+      - POSTGRESQL_USERNAME=auth
+      - POSTGRESQL_PASSWORD=auth
+      - POSTGRESQL_DATABASE=auth
+      - POSTGRESQL_ROOT_PASSWORD=rootpassword
+    ports:
+      - "25435:5432"
+  postgresql_company:
+    image: 'bitnami/postgresql:latest'
+    networks:
+      - postgres_network
+    environment:
+      - POSTGRESQL_USERNAME=company
+      - POSTGRESQL_PASSWORD=company
+      - POSTGRESQL_DATABASE=company
+      - POSTGRESQL_ROOT_PASSWORD=rootpassword
+    ports:
+      - "25436:5432"
+  postgresql_hub:
+    image: 'bitnami/postgresql:latest'
+    networks:
+      - postgres_network
+    environment:
+      - POSTGRESQL_USERNAME=hub
+      - POSTGRESQL_PASSWORD=hub
+      - POSTGRESQL_DATABASE=hub
+      - POSTGRESQL_ROOT_PASSWORD=rootpassword
+    ports:
+      - "25437:5432"
+  postgresql_message:
+    image: 'bitnami/postgresql:latest'
+    networks:
+      - postgres_network
+    environment:
+      - POSTGRESQL_USERNAME=message
+      - POSTGRESQL_PASSWORD=message
+      - POSTGRESQL_DATABASE=message
+      - POSTGRESQL_ROOT_PASSWORD=rootpassword
+    ports:
+      - "25438:5432"
 
 networks:
   postgres_network:
     driver: bridge
 
-volumes:
-  postgres_auth_data:
-  postgres_hub_data:
