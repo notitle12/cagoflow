@@ -74,6 +74,16 @@ public class HubService {
                 .orElseThrow(() -> new RuntimeException("Hub not found"));
     }
 
+    // 모든 허브 조회
+    @Transactional(readOnly = true)
+    public List<HubResponseDTO> getAllHubs() {
+        List<Hub> hubs = hubDomainService.getAllHubs();
+        return hubs.stream()
+                .map(this::toHubResponseDTO)  // Hub -> HubResponseDTO 변환
+                .collect(Collectors.toList());
+    }
+
+
     @Transactional(readOnly = true)
     public List<HubRouteResponseDTO> getHubRoutes(UUID hubId) {
         Hub hub = hubDomainService.getHubById(hubId)
@@ -85,7 +95,7 @@ public class HubService {
         allRoutes.addAll(hub.getEndRoutes());
 
         return allRoutes.stream()
-                .distinct() // 중복된 Route를 제거합니다.
+                .distinct() // 중복된 Route를 제거.
                 .map(this::toHubRouteResponseDTO)
                 .collect(Collectors.toList());
     }

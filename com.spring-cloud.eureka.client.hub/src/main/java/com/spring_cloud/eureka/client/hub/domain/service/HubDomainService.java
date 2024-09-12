@@ -3,10 +3,12 @@ package com.spring_cloud.eureka.client.hub.domain.service;
 import com.spring_cloud.eureka.client.hub.domain.model.Hub;
 import com.spring_cloud.eureka.client.hub.domain.model.HubRoute;
 import com.spring_cloud.eureka.client.hub.infrastructure.repository.HubRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,37 +28,47 @@ public class HubDomainService {
     }
 
     @Transactional
+    public List<Hub> getAllHubs() {
+        return hubRepository.findAll();
+    }
+
+    @Transactional
     public void deleteHub(UUID hubId) {
         hubRepository.deleteById(hubId);
     }
 
-//    @Transactional
-//    public Hub addRouteToHub(UUID hubId, HubRoute hubRoute) {
-//        Hub hub = hubRepository.findById(hubId)
-//                .orElseThrow(() -> new RuntimeException("Hub not found"));
-//
-//        hub.addRoute(hubRoute);
-//        return hubRepository.save(hub);
-//    }
-
     @Transactional
-    public void removeRouteFromHub(UUID hubId, UUID routeId) {
+    public Hub addRouteToHub(UUID hubId, HubRoute hubRoute) {
         Hub hub = hubRepository.findById(hubId)
                 .orElseThrow(() -> new RuntimeException("Hub not found"));
 
-        // Hub의 startRoutes와 endRoutes에서 해당 route를 찾아옴.
-        HubRoute route = hub.getStartRoutes().stream()
-                .filter(r -> r.getId().equals(routeId))
-                .findFirst()
-                .orElse(
-                        hub.getEndRoutes().stream()
-                                .filter(r -> r.getId().equals(routeId))
-                                .findFirst()
-                                .orElseThrow(() -> new RuntimeException("Route not found"))
-                );
+        hub.addRoute(hubRoute);
+        return hubRepository.save(hub);
+    }
 
-        hub.removeRoute(route);
-        hubRepository.save(hub);
+    @Transactional
+    public void removeRouteFromHub(UUID hubId, UUID routeId) {
+        // 1. startHub 조회 (Hub에서 route 삭제는 항상 Hub를 통해 이루어져야 함)
+        Hub startHub = hubRepository.findById(hubId)
+                .orElseThrow(() -> new EntityNotFoundException("Hub not found"));
+
+        // 2. startHub에서 해당 Route 찾기
+        HubRoute routeToDelete = startHub.getStartRoutes().stream()
+                .filter(route -> route.getId().equals(routeId))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Route not found in this Hub"));
+
+        // 3. 관련된 endHub 조회
+        Hub endHub = hubRepository.findById(routeToDelete.getEndHub().getId())
+                .orElseThrow(() -> new EntityNotFoundException("End Hub not found"));
+
+        // 4. startHub와 endHub에서 Route 제거
+        startHub.removeRoute(routeToDelete);
+        endHub.removeRoute(routeToDelete);
+
+        // 5. 변경 사항 저장
+        hubRepository.save(startHub);
+        hubRepository.save(endHub);
     }
 
     @Transactional
@@ -80,6 +92,7 @@ public class HubDomainService {
         hubRepository.deleteById(hubId);
     }
 
+    @Transactional
     public void saveHub(Hub hub) {
         hubRepository.save(hub);
     }
