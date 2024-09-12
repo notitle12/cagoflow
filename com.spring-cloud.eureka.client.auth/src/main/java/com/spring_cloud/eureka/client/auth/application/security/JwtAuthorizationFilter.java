@@ -6,12 +6,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -45,17 +42,16 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             // SecurityContext에 인증 정보 설정
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            log.info("Authentication set for user: {} with roles: {}", username, authorities);
         } else {
             // 빈 권한 처리
-//            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-//                    null,
-//                    null,
-//                    AuthorityUtils.NO_AUTHORITIES // 빈 권한 목록
-            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 헤더가 없거나 역할 정보가 없으면 401 응답
-            return;
-//            );
+            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                    null,
+                    null,
+                    AuthorityUtils.NO_AUTHORITIES );// 빈 권한 목록
 
-//            SecurityContextHolder.getContext().setAuthentication(auth);
+            SecurityContextHolder.getContext().setAuthentication(auth);
+            log.info("Authentication set with no authorities");
         }
 
         // 필터 체인을 계속해서 진행

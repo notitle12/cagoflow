@@ -42,4 +42,9 @@ public class DeliveryManager {
     public void updateDeliveryType(DeliveryTypeRoleEnum newDeliveryType) {
         this.deliveryTypeRoleEnum = newDeliveryType;
     }
+
+    // 소프트 삭제 메서드
+    public void deliveryDeleted() {
+        this.isDelete = true;
+    }
 }

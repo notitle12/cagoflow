@@ -1,19 +1,26 @@
 package com.spring_cloud.eureka.client.auth.controller;
 
 import com.spring_cloud.eureka.client.auth.application.AuthService;
+import com.spring_cloud.eureka.client.auth.application.dto.LoginRequestDto;
 import com.spring_cloud.eureka.client.auth.application.dto.SignUpRequestDto;
 import com.spring_cloud.eureka.client.auth.application.dto.UserInfoResponseDto;
+import com.spring_cloud.eureka.client.auth.application.dto.UserInfoUpdateRequestDto;
+import com.spring_cloud.eureka.client.auth.application.security.JwtUtil;
 import com.spring_cloud.eureka.client.auth.application.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -46,18 +53,40 @@ public class AuthController {
         return ResponseEntity.ok("회원가입 성공");
     }
 
-    // 현재 로그인한 사용자의 정보 조회
-//    @GetMapping("/users/me")
-//    public ResponseEntity<UserInfoResponseDto> getCurrentUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        if (userDetails == null) {
-//            throw new RuntimeException("UserDetails is not available");
-//        }
-//
-//        String username = userDetails.getUser().getUsername();
-//
-//        UserInfoResponseDto userInfo = authService.getUserInfo(username);
-//        return ResponseEntity.ok(userInfo);
-//    }
+    // 로그인
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto) {
+        // 로그인 요청 처리 후 JWT 토큰 반환
+        String token = authService.login(loginRequestDto);
+
+        // JWT 토큰을 응답 헤더에 추가
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(JwtUtil.AUTHORIZATION_HEADER, token);
+
+        return ResponseEntity.ok().headers(headers).body("Login successful");
+    }
+
+    // 사용자 정보 수정
+//    @PreAuthorize("hasRole('USER')")
+    @PutMapping("/users/me")
+    public ResponseEntity<String> updateUserInfo(
+            @Valid @RequestBody UserInfoUpdateRequestDto updateRequestDto,
+            @AuthenticationPrincipal String username) {
+
+        try {
+            authService.updateUserInfo(username, updateRequestDto);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+        return ResponseEntity.ok("사용자 정보가 성공적으로 업데이트되었습니다.");
+    }
+
+    @DeleteMapping("/me")
+    public void softDeleteUser() {
+        authService.softDeleteUser();
+    }
+
     // 현재 로그인한 사용자의 정보 조회
     @GetMapping("/users/me")
     public ResponseEntity<UserInfoResponseDto> getCurrentUserInfo() {
@@ -75,5 +104,13 @@ public class AuthController {
         // 사용자 정보 조회
         UserInfoResponseDto userInfo = authService.getUserInfo(username);
         return ResponseEntity.ok(userInfo);
+    }
+
+    // 모든 사용자 정보 조회 (마스터 권한이 있는 사용자만 가능)
+//    @PreAuthorize("hasRole('MASTER')")
+    @GetMapping("/users")
+    public ResponseEntity<List<UserInfoResponseDto>> getAllUsers() {
+        List<UserInfoResponseDto> users = authService.getAllUsers();
+        return ResponseEntity.ok(users);
     }
 }
