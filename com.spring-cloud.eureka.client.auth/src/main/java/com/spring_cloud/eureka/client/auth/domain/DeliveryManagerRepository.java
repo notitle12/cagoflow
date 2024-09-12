@@ -6,7 +6,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface DeliveryManagerRepository extends JpaRepository<DeliveryManager, Long> {
-    Optional<DeliveryManager> findByDeliveryMangerId(UUID deliveryMangerId);
-
     Optional<DeliveryManager> findByUser_UserId(Long userId);
 }

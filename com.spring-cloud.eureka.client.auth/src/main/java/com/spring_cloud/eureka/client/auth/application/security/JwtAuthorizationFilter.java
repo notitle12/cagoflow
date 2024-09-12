@@ -88,7 +88,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     // 인증 처리
-    // 사용자 이메일을 사용하여 인증 객체를 생성하고, 이를 Spring Security의 SecurityContext에 설정
+    // 사용자 아이디를 사용하여 인증 객체를 생성하고, 이를 Spring Security의 SecurityContext에 설정
     public void setAuthentication(String username) {
         if (username == null || username.isEmpty()) {
             log.error("Username is null or empty");

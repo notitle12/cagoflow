@@ -8,7 +8,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -45,9 +47,27 @@ public class AuthController {
     }
 
     // 현재 로그인한 사용자의 정보 조회
+//    @GetMapping("/users/me")
+//    public ResponseEntity<UserInfoResponseDto> getCurrentUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        if (userDetails == null) {
+//            throw new RuntimeException("UserDetails is not available");
+//        }
+//
+//        String username = userDetails.getUser().getUsername();
+//
+//        UserInfoResponseDto userInfo = authService.getUserInfo(username);
+//        return ResponseEntity.ok(userInfo);
+//    }
     @GetMapping("/users/me")
-    public ResponseEntity<UserInfoResponseDto> getCurrentUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        String username = userDetails.getUser().getUsername();
+    public ResponseEntity<UserInfoResponseDto> getCurrentUserInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetailsImpl)) {
+            throw new RuntimeException("UserDetails is not available");
+        }
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        String username = userDetails.getUsername();
 
         UserInfoResponseDto userInfo = authService.getUserInfo(username);
         return ResponseEntity.ok(userInfo);

@@ -47,7 +47,7 @@ public class WebSecurityConfig {
     // JWT 인증 필터를 생성
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(userDetailsService); // secretKey는 다른 방법으로 설정
+        return new JwtAuthorizationFilter(userDetailsService); // UserDetailsServiceImpl 인자 제공
     }
 
     @Bean
@@ -70,6 +70,7 @@ public class WebSecurityConfig {
         );
         // 필터 관리
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         // HttpSecurity 객체를 기반으로 SecurityFilterChain을 생성
         return http.build();
