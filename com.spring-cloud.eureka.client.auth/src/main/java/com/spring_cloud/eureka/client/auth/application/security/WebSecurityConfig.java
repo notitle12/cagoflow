@@ -1,9 +1,5 @@
-package com.spring_cloud.eureka.client.auth.config;
+package com.spring_cloud.eureka.client.auth.application.security;
 
-import com.spring_cloud.eureka.client.auth.application.security.JwtAuthenticationFilter;
-import com.spring_cloud.eureka.client.auth.application.security.JwtAuthorizationFilter;
-import com.spring_cloud.eureka.client.auth.application.security.JwtUtil;
-import com.spring_cloud.eureka.client.auth.application.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -50,8 +46,8 @@ public class WebSecurityConfig {
 
     // JWT 인증 필터를 생성
     @Bean
-    public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(jwtUtil, userDetailsService);
+    public JwtAuthorizationFilter jwtAuthorizationFilter(JwtUtil jwtUtil, JwtValidator jwtValidator, UserDetailsServiceImpl userDetailsService) {
+        return new JwtAuthorizationFilter(jwtUtil, jwtValidator, userDetailsService);
     }
 
     @Bean
@@ -78,19 +74,5 @@ public class WebSecurityConfig {
         // HttpSecurity 객체를 기반으로 SecurityFilterChain을 생성
         return http.build();
     }
-    // 인가 성공 시
-//    public void setAuthentication(String username) {
-//        SecurityContext context = SecurityContextHolder.createEmptyContext();
-//        Authentication authentication = createAuthentication(username);
-//        context.setAuthentication(authentication);
-//        SecurityContextHolder.setContext(context);
-//    }
-
-    // 인증 객체 생성
-    // loadUserByUsername 는 Spring Security에서 UserDetailsService 구현체가 사용자를 찾지 못했을 때 던지는 표준 예외
-//    private Authentication createAuthentication(String username) {
-//        // 예시: UsernamePasswordAuthenticationToken을 사용해 Authentication 객체 생성
-//        return new UsernamePasswordAuthenticationToken(username, null, userDetailsService.loadUserByUsername(username).getAuthorities());
-//    }
 }
 
