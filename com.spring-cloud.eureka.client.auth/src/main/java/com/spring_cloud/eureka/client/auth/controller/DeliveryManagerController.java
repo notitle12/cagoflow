@@ -19,6 +19,7 @@ public class DeliveryManagerController {
 
     private final DeliveryManagerService deliveryManagerService;
 
+    @PreAuthorize("hasRole('DELIVERY_MANAGER')")
     @PostMapping("/type-register")
     public ResponseEntity<String> registerDeliveryManager(
             @RequestBody DeliveryTypeRequestDto deliveryTypeRequestDto,
@@ -38,6 +39,7 @@ public class DeliveryManagerController {
         return ResponseEntity.ok("배송 담당자가 성공적으로 등록되었습니다.");
     }
 
+    @PreAuthorize("hasRole('DELIVERY_MANAGER')")
     @PutMapping("/type-update")
     public ResponseEntity<String> updateDeliveryManager(
             @RequestBody DeliveryTypeRequestDto deliveryTypeRequestDto,
@@ -57,6 +59,7 @@ public class DeliveryManagerController {
         return ResponseEntity.ok("배송 담당자가 성공적으로 수정되었습니다.");
     }
 
+    @PreAuthorize("hasRole('DELIVERY_MANAGER')")
     @DeleteMapping("/delivery-manager")
     public ResponseEntity<String> softDeleteDeliveryManager(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         Long userId = userDetails.getUserId(); // 현재 사용자의 ID를 가져옵니다.

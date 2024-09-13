@@ -6,15 +6,14 @@ import com.spring_cloud.eureka.client.auth.application.dto.SignUpRequestDto;
 import com.spring_cloud.eureka.client.auth.application.dto.UserInfoResponseDto;
 import com.spring_cloud.eureka.client.auth.application.dto.UserInfoUpdateRequestDto;
 import com.spring_cloud.eureka.client.auth.application.security.JwtUtil;
-import com.spring_cloud.eureka.client.auth.application.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -50,7 +49,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
 
-        return ResponseEntity.ok("회원가입 성공");
+        return ResponseEntity.ok("회원가입을 성공하였습니다.");
     }
 
     // 로그인
@@ -63,15 +62,22 @@ public class AuthController {
         HttpHeaders headers = new HttpHeaders();
         headers.set(JwtUtil.AUTHORIZATION_HEADER, token);
 
-        return ResponseEntity.ok().headers(headers).body("Login successful");
+        return ResponseEntity.ok().headers(headers).body("로그인을 성공하였습니다.");
     }
 
-    // 사용자 정보 수정
-//    @PreAuthorize("hasRole('USER')")
+    // 본인의 회원정보 수정
     @PutMapping("/users/me")
     public ResponseEntity<String> updateUserInfo(
-            @Valid @RequestBody UserInfoUpdateRequestDto updateRequestDto,
-            @AuthenticationPrincipal String username) {
+            @Valid @RequestBody UserInfoUpdateRequestDto updateRequestDto) {
+
+        // SecurityContext에서 인증 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof String)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("사용자 인증 정보가 없습니다.");
+        }
+
+        // 인증된 사용자의 이름 가져오기
+        String username = (String) authentication.getPrincipal();
 
         try {
             authService.updateUserInfo(username, updateRequestDto);
@@ -79,7 +85,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
 
-        return ResponseEntity.ok("사용자 정보가 성공적으로 업데이트되었습니다.");
+        return ResponseEntity.ok("사용자 정보가 성공적으로 업데이트 되었습니다.");
     }
 
     @DeleteMapping("/me")
@@ -95,7 +101,7 @@ public class AuthController {
         System.out.println(authentication);
         // 인증 정보가 없거나 principal이 String이 아닌 경우 예외 처리
         if (authentication == null || !(authentication.getPrincipal() instanceof String)) {
-            throw new RuntimeException("Authentication details are not available");
+            throw new RuntimeException("사용할 수 없는 인증 정보 입니다.");
         }
 
         // 인증된 사용자의 이름 가져오기
@@ -107,7 +113,7 @@ public class AuthController {
     }
 
     // 모든 사용자 정보 조회 (마스터 권한이 있는 사용자만 가능)
-//    @PreAuthorize("hasRole('MASTER')")
+    @PreAuthorize("hasRole('MASTER')")
     @GetMapping("/users")
     public ResponseEntity<List<UserInfoResponseDto>> getAllUsers() {
         List<UserInfoResponseDto> users = authService.getAllUsers();

@@ -16,29 +16,29 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j(topic = "JWT 인가")
-public class JwtAuthorizationFilter extends OncePerRequestFilter {
+@Slf4j(topic = "권한 설정 처리")
+public class CustomPreAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
         // 요청의 헤더에서 사용자 정보 추출
-        // :TODO 상품 서비스 선처리 필터 작성
         // 헤더에서 사용자 정보와 역할(Role)을 추출
         String userId = req.getHeader("X-User-Id");
         String username = req.getHeader("X-Username");
         String roleHeader = req.getHeader("X-Role");
 
-        System.out.println(username);
-        System.out.println(roleHeader);
+        System.out.println("userId = " + userId);
+        System.out.println("username = " + username);
+        System.out.println("roleHeader = " + roleHeader);
         if (username != null && roleHeader != null) {
             // rolesHeader에 저장된 역할을 SimpleGrantedAuthority로 변환
             List<SimpleGrantedAuthority> authorities = Arrays.stream(roleHeader.split(","))
-                    .map(role -> new SimpleGrantedAuthority(role.trim()))
+                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role.trim()))
                     .collect(Collectors.toList());
 
             // 사용자 정보를 기반으로 인증 토큰 생성
             UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(username, null, authorities);
+                    new UsernamePasswordAuthenticationToken(username, userId, authorities); // userId 추가
 
             // SecurityContext에 인증 정보 설정
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
@@ -48,7 +48,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                     null,
                     null,
-                    AuthorityUtils.NO_AUTHORITIES );// 빈 권한 목록
+                    AuthorityUtils.NO_AUTHORITIES); // 빈 권한 목록
 
             SecurityContextHolder.getContext().setAuthentication(auth);
             log.info("Authentication set with no authorities");

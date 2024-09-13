@@ -23,10 +23,6 @@ public class DeliveryManagerService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        if (!user.getRole().equals(UserRoleEnum.DELIVERY_MANAGER)) {
-            throw new SecurityException("권한이 없습니다.");
-        }
-
         // 배송 담당자 정보 확인 또는 생성
         DeliveryManager deliveryManager = DeliveryManager.builder()
                 .user(user)
@@ -45,10 +41,6 @@ public class DeliveryManagerService {
         // 사용자가 DELIVERY_MANAGER인지 확인
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-
-        if (!user.getRole().equals(UserRoleEnum.DELIVERY_MANAGER)) {
-            throw new SecurityException("권한이 없습니다.");
-        }
 
         // 배송 담당자 정보 확인
         DeliveryManager deliveryManager = deliveryManagerRepository.findByUser_UserId(userId)

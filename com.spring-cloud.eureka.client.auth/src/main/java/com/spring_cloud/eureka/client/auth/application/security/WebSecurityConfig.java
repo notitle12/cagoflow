@@ -18,15 +18,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Slf4j
 @Configuration
-@EnableWebSecurity // Spring Security 지원을 가능하게 함
+@EnableWebSecurity // Spring Security 사용을 위한 설정
 @RequiredArgsConstructor
-@EnableGlobalMethodSecurity(prePostEnabled = true) // 이 어노테이션이 필요합니다.
+@EnableGlobalMethodSecurity(prePostEnabled = true) // @PreAuthorize 어노테이션 사용을 위한 설정
 public class WebSecurityConfig {
-
-    private final JwtUtil jwtUtil;
-    private final UserDetailsServiceImpl userDetailsService;
-    private final AuthenticationConfiguration authenticationConfiguration;
-
 
     // 비밀번호 인코더 빈 생성: BCryptPasswordEncoder 사용
     @Bean
@@ -40,18 +35,10 @@ public class WebSecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
-    // JWT 인증 필터를 생성하고 인증 관리자 설정
-//    @Bean
-//    public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-//        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil);
-//        filter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
-//        return filter;
-//    }
-
     // JWT 인증 필터를 생성
     @Bean
-    public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter();
+    public CustomPreAuthFilter jwtAuthorizationFilter() {
+        return new CustomPreAuthFilter();
     }
 
     @Bean

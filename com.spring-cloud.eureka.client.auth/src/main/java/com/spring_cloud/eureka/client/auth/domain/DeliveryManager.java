@@ -30,8 +30,11 @@ public class DeliveryManager {
 //    @ManyToOne(mappedBy ="hub_id")
 //    private UUID hubId;  // 허브 ID (업체 배송 담당자의 경우)
 
+//    @OneToOne(mappedBy = "slack_id")
+//    private UUID slackId;
+
     @Enumerated(EnumType.STRING)
-    @Column(name = "delivery_type", nullable = false)
+    @Column(name = "agent_type", nullable = false)
     private DeliveryTypeRoleEnum deliveryTypeRoleEnum;  // 배송 담당자 타입
 
     @Builder.Default
