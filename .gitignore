@@ -1,2 +1,6 @@
 /.idea/
 com.spring-cloud.eureka.client.order/gradle.properties
+com.spring-cloud.eureka.client.auth/gradle.properties
+com.spring-cloud.eureka.client.company/gradle.properties
+com.spring-cloud.eureka.client.hub/gradle.properties
+com.spring-cloud.eureka.client.message/gradle.properties

@@ -21,6 +21,13 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven {
+		url = uri("s3://cargoflowlib/path/to/repository")
+		credentials(AwsCredentials) {
+			accessKey = project.findProperty("aws.accessKeyId") ?: System.getenv("AWS_ACCESS_KEY_ID")
+			secretKey = project.findProperty("aws.secretKey") ?: System.getenv("AWS_SECRET_ACCESS_KEY")
+		}
+	}
 }
 
 ext {
@@ -58,6 +65,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
+	implementation 'com.cargoflow:cargo:1.0.0'
 }
 dependencyManagement {
 	imports {
