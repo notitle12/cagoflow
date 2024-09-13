@@ -3,4 +3,18 @@ spring:
     name: CompanyService
   config:
     import: optional:configserver:http://sparta24:sparta24@localhost:9000
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:25436/company
+    username: company
+    password: company
 
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_batch_fetch_size: 1000
