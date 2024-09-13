@@ -59,7 +59,13 @@ public class HubService {
         hubDomainService.saveHub(startHub);
         hubDomainService.saveHub(endHub);
 
-        return toHubRouteResponseDTO(hubRoute);
+        // 저장된 hubRoute를 다시 가져와서 반환할 때 사용 (jpa에 의해 영속화 된 시점이기에 이땐 id 할당됨)
+        HubRoute savedRoute = startHub.getStartRoutes().stream()
+                .filter(route -> route.getRouteDetails().equals(hubRouteRequestDTO.getRouteDetails()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Route not saved properly"));
+
+        return toHubRouteResponseDTO(savedRoute);
     }
 
     @Transactional
