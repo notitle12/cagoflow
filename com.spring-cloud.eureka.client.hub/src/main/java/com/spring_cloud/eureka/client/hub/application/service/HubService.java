@@ -59,7 +59,13 @@ public class HubService {
         hubDomainService.saveHub(startHub);
         hubDomainService.saveHub(endHub);
 
-        return toHubRouteResponseDTO(hubRoute);
+        // 저장된 hubRoute를 다시 가져와서 반환할 때 사용 (jpa에 의해 영속화 된 시점이기에 이땐 id 할당됨)
+        HubRoute savedRoute = startHub.getStartRoutes().stream()
+                .filter(route -> route.getRouteDetails().equals(hubRouteRequestDTO.getRouteDetails()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Route not saved properly"));
+
+        return toHubRouteResponseDTO(savedRoute);
     }
 
     @Transactional
@@ -74,6 +80,16 @@ public class HubService {
                 .orElseThrow(() -> new RuntimeException("Hub not found"));
     }
 
+    // 모든 허브 조회
+    @Transactional(readOnly = true)
+    public List<HubResponseDTO> getAllHubs() {
+        List<Hub> hubs = hubDomainService.getAllHubs();
+        return hubs.stream()
+                .map(this::toHubResponseDTO)  // Hub -> HubResponseDTO 변환
+                .collect(Collectors.toList());
+    }
+
+
     @Transactional(readOnly = true)
     public List<HubRouteResponseDTO> getHubRoutes(UUID hubId) {
         Hub hub = hubDomainService.getHubById(hubId)
@@ -85,7 +101,7 @@ public class HubService {
         allRoutes.addAll(hub.getEndRoutes());
 
         return allRoutes.stream()
-                .distinct() // 중복된 Route를 제거합니다.
+                .distinct() // 중복된 Route를 제거.
                 .map(this::toHubRouteResponseDTO)
                 .collect(Collectors.toList());
     }
