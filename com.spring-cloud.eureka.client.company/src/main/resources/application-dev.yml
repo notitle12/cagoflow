@@ -3,3 +3,11 @@ spring:
     name: CompanyService
   config:
     import: optional:configserver:http://sparta24:sparta24@localhost:9000
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cagoflow
+    username: postgres
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
