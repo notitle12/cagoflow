@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="b1fefd9a-7244-4ca8-ae86-b9e243e50988" name="변경" comment="">
+      <change afterPath="$PROJECT_DIR$/com.spring-cloud.eureka.client.order/src/main/java/com/spring_cloud/eureka/client/order/domain/model/AuditingDate.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/com.spring-cloud.eureka.client.order/src/main/java/com/spring_cloud/eureka/client/order/domain/model/Delivery.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/com.spring-cloud.eureka.client.order/src/main/java/com/spring_cloud/eureka/client/order/domain/model/DeliveryRoute.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/com.spring-cloud.eureka.client.order/src/main/java/com/spring_cloud/eureka/client/order/domain/model/Order.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/com.spring-cloud.eureka.client.order/src/main/java/com/spring_cloud/eureka/client/order/domain/repository/OrderRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/com.spring-cloud.eureka.client.order/src/main/java/com/spring_cloud/eureka/client/order/domain/service.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$/com.spring-cloud.eureka.client.auth">
+      <ProjectState />
+    </projectState>
+    <projectState path="$PROJECT_DIR$/com.spring-cloud.eureka.client.company">
+      <ProjectState />
+    </projectState>
+    <projectState path="$PROJECT_DIR$/com.spring-cloud.eureka.client.config_server">
+      <ProjectState />
+    </projectState>
+    <projectState path="$PROJECT_DIR$/com.spring-cloud.eureka.client.gateway">
+      <ProjectState />
+    </projectState>
+    <projectState path="$PROJECT_DIR$/com.spring-cloud.eureka.client.hub">
+      <ProjectState />
+    </projectState>
+    <projectState path="$PROJECT_DIR$/com.spring-cloud.eureka.client.message">
+      <ProjectState />
+    </projectState>
+    <projectState path="$PROJECT_DIR$/com.spring-cloud.eureka.client.order">
+      <ProjectState />
+    </projectState>
+    <projectState path="$PROJECT_DIR$/com.spring-cloud.eureka.server">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
+  <component name="KubernetesApiProvider"><![CDATA[{
+  "isMigrated": true
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 3
+}]]></component>
+  <component name="ProjectId" id="2loh8lnNpK3VDGTsbA1LakC4Zik" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.com.spring-cloud.eureka.client.auth 빌드.executor": "Run",
+    "Gradle.com.spring-cloud.eureka.client.company 빌드.executor": "Run",
+    "Gradle.com.spring-cloud.eureka.client.config_server 빌드.executor": "Run",
+    "Gradle.com.spring-cloud.eureka.client.gateway 빌드.executor": "Run",
+    "Gradle.com.spring-cloud.eureka.client.message 빌드.executor": "Run",
+    "Gradle.com.spring-cloud.eureka.client.order 빌드.executor": "Run",
+    "Gradle.com.spring-cloud.eureka.server 빌드.executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Spring Boot.AuthApplication.executor": "Run",
+    "Spring Boot.CompanyApplication.executor": "Run",
+    "Spring Boot.ConfigServerApplication.executor": "Run",
+    "Spring Boot.GatewayApplication.executor": "Run",
+    "Spring Boot.MessageApplication.executor": "Run",
+    "Spring Boot.OrderApplication.executor": "Run",
+    "Spring Boot.ServerApplication.executor": "Run",
+    "git-widget-placeholder": "order",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "G:/sparta/Project2/CargoFlow",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.configurations.included.in.services": "true",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.spring_cloud.eureka.client.order.domain.model" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="MicronautRunConfigurationType" />
+        <option value="QuarkusRunConfigurationType" />
+        <option value="SpringBootApplicationConfigurationType" />
+      </set>
+    </option>
+  </component>
+  <component name="RunManager" selected="Spring Boot.AuthApplication">
+    <configuration name="AuthApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="ACTIVE_PROFILES" value="dev" />
+      <module name="com.spring-cloud.eureka.client.auth.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.spring_cloud.eureka.client.auth.AuthApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="CompanyApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="ACTIVE_PROFILES" value="dev" />
+      <module name="com.spring-cloud.eureka.client.company.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.spring_cloud.eureka.client.company.CompanyApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ConfigServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="config_server.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.spring_cloud.eureka.client.config.config_server.ConfigServerApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="ACTIVE_PROFILES" value="dev" />
+      <module name="com.spring-cloud.eureka.client.gateway.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.spring_cloud.eureka.client.gateway.GatewayApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MessageApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="ACTIVE_PROFILES" value="dev" />
+      <module name="com.spring-cloud.eureka.client.message.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.spring_cloud.eureka.client.message.MessageApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="OrderApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="ACTIVE_PROFILES" value="dev" />
+      <module name="com.spring-cloud.eureka.client.order.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.spring_cloud.eureka.client.order.OrderApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="ACTIVE_PROFILES" value="dev" />
+      <module name="com.spring-cloud.eureka.server.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.spring_cloud.eureka.server.ServerApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Spring Boot.AuthApplication" />
+      <item itemvalue="Spring Boot.GatewayApplication" />
+      <item itemvalue="Spring Boot.CompanyApplication" />
+      <item itemvalue="Spring Boot.ConfigServerApplication" />
+      <item itemvalue="Spring Boot.MessageApplication" />
+      <item itemvalue="Spring Boot.OrderApplication" />
+      <item itemvalue="Spring Boot.ServerApplication" />
+    </list>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-18abd8497189-intellij.indexing.shared.core-IU-241.14494.240" />
+        <option value="bundled-js-predefined-1d06a55b98c1-74d2a5396914-JavaScript-IU-241.14494.240" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="애플리케이션 수준" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="디폴트 작업">
+      <changelist id="b1fefd9a-7244-4ca8-ae86-b9e243e50988" name="변경" comment="" />
+      <created>1725852179332</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1725852179332</updated>
+      <workItem from="1725852180434" duration="11359000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

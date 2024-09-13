@@ -88,7 +88,7 @@ public class LocalJwtAuthenticationFilter implements GlobalFilter {
     private boolean authorizationPassRequest (String path){
         if(path.startsWith("/auth/login")){
             return true;
-        } else if (path.startsWith("/auth/signUp")) {
+        } else if (path.startsWith("/auth/sign-up")) {
             return true;
         }else {
             return false;
