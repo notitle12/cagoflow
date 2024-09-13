@@ -10,9 +10,6 @@ import com.spring_cloud.eureka.client.company.presentation.request.CompanyReques
 import com.spring_cloud.eureka.client.company.presentation.request.CompanySearch;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -26,10 +23,7 @@ public class CompanyService {
 
 
     public void createCompany(CompanyRequest companyRequest) {
-
         validateHubId(companyRequest.getHubId());
-
-        // userId 검증 로직 추가하기
 
         companyDomainService.createCompany(
                 companyRequest.getCompanyName(),
@@ -40,13 +34,7 @@ public class CompanyService {
         );
     }
 
-    public CompanyResponseDto getCompanyById(UUID companyId) {
-        Company company = companyDomainService.getCompanyById(companyId);
-        return CompanyResponseDto.fromEntity(company);
-    }
-
     public void updateCompany(UUID companyId, CompanyRequest companyRequest) {
-
         validateHubId(companyRequest.getHubId());
 
         companyDomainService.updateCompany(
@@ -62,7 +50,10 @@ public class CompanyService {
         companyDomainService.deleteCompany(companyId, deleteBy);
     }
 
-
+    public CompanyResponseDto getCompanyById(UUID companyId) {
+        Company company = companyDomainService.getCompanyById(companyId);
+        return CompanyResponseDto.fromEntity(company);
+    }
 
     private void validateHubId(UUID hubId) {
         HubResponse hubResponse = hubClient.getHubById(hubId);

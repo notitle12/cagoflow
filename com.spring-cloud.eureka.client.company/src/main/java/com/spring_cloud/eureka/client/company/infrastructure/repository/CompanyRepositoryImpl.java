@@ -43,6 +43,9 @@ public class CompanyRepositoryImpl implements CompanyRepositoryCustom {
             whereClause.and(company.companyAddress.containsIgnoreCase(companySearch.getCompanyAddress()));
         }
 
+        // 삭제되지 않은 회사만 조회
+        whereClause.and(company.isDelete.eq(false));
+
         // 정렬 조건 적용
         OrderSpecifier<?> sortOrder = orderBy(companySearch.getSortBy(), companySearch.getAscending());
 

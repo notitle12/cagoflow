@@ -1,8 +1,7 @@
 package com.spring_cloud.eureka.client.company.domain.service;
 
-import com.spring_cloud.eureka.client.company.application.dto.CompanyResponseDto;
-import com.spring_cloud.eureka.client.company.domain.model.Company;
 import com.spring_cloud.eureka.client.company.domain.enums.CompanyType;
+import com.spring_cloud.eureka.client.company.domain.model.Company;
 import com.spring_cloud.eureka.client.company.domain.repository.CompanyRepository;
 import com.spring_cloud.eureka.client.company.presentation.request.CompanySearch;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +22,7 @@ public class CompanyDomainService {
 
     @Transactional
     public void createCompany(String companyName, UUID hubId, Long userId, String companyAddress, CompanyType companyType) {
-        // 중복 회사 검증
         validateDuplicateCompany(companyName, hubId);
-        // 회사 생성
         Company company = Company.create(
                 companyName,
                 hubId,
@@ -33,12 +30,12 @@ public class CompanyDomainService {
                 companyAddress,
                 companyType
         );
-        // 저장
         companyRepository.save(company);
     }
 
     @Transactional
     public void updateCompany(UUID companyId, String companyName, UUID hubId, String companyAddress, CompanyType companyType) {
+        validateDuplicateCompany(companyName, hubId);
         Company company = getCompanyById(companyId);
         company.update(companyName, hubId, companyAddress, companyType);
         companyRepository.save(company);
