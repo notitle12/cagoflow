@@ -7,13 +7,18 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
+import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
+@Slf4j
 @Component
 public class JwtUtil {
     // Header KEY 값
@@ -46,10 +51,13 @@ public class JwtUtil {
         Date now = new Date(); // 현재 시간
         Date expirationDate = new Date(now.getTime() + TOKEN_TIME);
 
+        // JWT Claims 확인 로그 추가
+        log.info("JWT Claims - userId: {}, username: {}, role: {}", userId, username, role);
+
         return BEARER_PREFIX +
                 Jwts.builder()
+                        .setSubject(username) // 사용자 식별자값(ID)
                         .claim(USER_ID_KEY, userId)
-                        .claim("username", username)
                         .claim(AUTHORIZATION_KEY, role)
                         .issuer(issuer)
                         .issuedAt(now)
@@ -57,25 +65,4 @@ public class JwtUtil {
                         .signWith(key, signatureAlgorithm)
                         .compact();
     }
-
-    // 토큰 검증
-    public Claims parseClaims(String token) throws JwtException {
-        return Jwts.parser()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
-
-    // 토큰 유효성 확인
-    public boolean validateToken(String token) {
-        try {
-            parseClaims(token);
-            return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
-        }
-    }
-
-
 }

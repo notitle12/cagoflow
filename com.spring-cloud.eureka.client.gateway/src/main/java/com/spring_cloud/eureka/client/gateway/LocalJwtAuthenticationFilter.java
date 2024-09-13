@@ -13,6 +13,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import javax.crypto.SecretKey;
+
 @Slf4j
 @Component
 public class LocalJwtAuthenticationFilter implements GlobalFilter {
@@ -22,37 +23,20 @@ public class LocalJwtAuthenticationFilter implements GlobalFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        try{
-            String path = exchange.getRequest().getURI().getPath();
-            // 로그인 회원가입은 토큰 검증 없이 진행
-            if (authorizationPassRequest(path)) {
-                return chain.filter(exchange);
-            }
-            String token = extractToken(exchange);
+        String path = exchange.getRequest().getURI().getPath();
 
-            if (token == null || !validateToken(token, exchange)) {
-                exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-                return exchange.getResponse().setComplete();
-            }
-
+        // 로그인 및 회원가입 경로는 토큰 검증을 통과합니다.
+        if (isAuthorizationPassRequest(path)) {
             return chain.filter(exchange);
-        }catch (ExpiredJwtException e){
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
-        }catch (MalformedJwtException e){
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
-        }catch (UnsupportedJwtException e){
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
-        }catch (SecurityException | IllegalArgumentException e){
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
-        }catch (Exception e) {
+        }
+
+        String token = extractToken(exchange);
+        if (token == null || !validateToken(token, exchange)) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
 
+        return chain.filter(exchange);
     }
 
     private String extractToken(ServerWebExchange exchange) {
@@ -63,45 +47,50 @@ public class LocalJwtAuthenticationFilter implements GlobalFilter {
         return null;
     }
 
-    /**
-     * 토큰 검증 및 토큰의 정보를 추출
-     */
-    private boolean validateToken(String token, ServerWebExchange exchange) throws SecurityException, MalformedJwtException, ExpiredJwtException, UnsupportedJwtException, IllegalArgumentException {
+    private boolean validateToken(String token, ServerWebExchange exchange) {
+        try {
+            SecretKey key = getSecretKey();
+            Claims claims = getClaimsFromToken(token, key);
 
-            SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(secretKey));
-            // 토큰 검증
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Integer userId = claims.get("userId", Integer.class);
+            String username = claims.getSubject();
+            if (userId == null) {
+                throw new JwtException("토큰 클레임에서 UserId를 찾을 수 없습니다.");
+            }
 
-            Claims claims = getUserInfoFromToken(token, key);
+            addHeadersToRequest(exchange, userId, username, claims);
+            log.info(userId + " " + claims.get("auth") + " 인가 통과");
+            log.info(username + " " + claims.getSubject() + " 인가 통과");
 
-            exchange.getRequest().mutate()
-                    .header("X-User-Id", claims.get("user_id").toString())
-                    .header("X-Role", claims.get("role").toString())
-                    .build();
-            log.info( claims.get("user_id")+" "+claims.get("role")+" "+"인가 통과");
-            // 추가적인 검증 로직 (예: 토큰 만료 여부 확인 등)을 여기에 추가할 수 있습니다.
             return true;
-
-    }
-
-
-    private boolean authorizationPassRequest (String path){
-        if(path.startsWith("/auth/login")){
-            return true;
-        } else if (path.startsWith("/auth/sign-up")) {
-            return true;
-        }else {
+        } catch (JwtException e) {
+            log.error("JWT 검증 오류: ", e);
+            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return false;
         }
     }
 
-
-    /**
-     * 토큰 정보 추출
-     */
-    public Claims getUserInfoFromToken(String token, SecretKey key) {
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    private SecretKey getSecretKey() {
+        return Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(secretKey));
     }
 
+    private Claims getClaimsFromToken(String token, SecretKey key) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
 
+    private void addHeadersToRequest(ServerWebExchange exchange, Integer userId, String username, Claims claims) {
+        exchange.getRequest().mutate()
+                .header("X-User-Id", userId.toString())
+                .header("X-Username", username)
+                .header("X-Role", claims.get("auth").toString())
+                .build();
+    }
+
+    private boolean isAuthorizationPassRequest(String path) {
+        return path.startsWith("/auth/login") || path.startsWith("/auth/sign-up");
+    }
 }
