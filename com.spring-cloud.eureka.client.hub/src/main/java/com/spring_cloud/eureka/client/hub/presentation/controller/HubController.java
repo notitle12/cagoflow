@@ -6,6 +6,8 @@ import com.spring_cloud.eureka.client.hub.application.service.HubService;
 import com.spring_cloud.eureka.client.hub.presentation.dtos.HubRequestDTO;
 import com.spring_cloud.eureka.client.hub.presentation.dtos.HubRouteRequestDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -93,6 +95,31 @@ public class HubController {
     public ResponseEntity<Void> restoreHub(@PathVariable UUID hubId) {
         hubService.restoreHub(hubId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<HubResponseDTO>> searchHubs(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String zipcode,
+            @RequestParam(required = false) String address,
+            @RequestParam(required = false) Double latitude,
+            @RequestParam(required = false) Double longitude,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        HubRequestDTO hubRequestDTO = HubRequestDTO.builder()
+                .name(name)
+                .zipcode(zipcode)
+                .address(address)
+                .latitude(latitude)
+                .longitude(longitude)
+                .build();
+
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
+
+        Page<HubResponseDTO> hubs = hubService.searchHubs(hubRequestDTO, pageRequest);
+
+        return new ResponseEntity<>(hubs, HttpStatus.OK);
     }
 
 }
