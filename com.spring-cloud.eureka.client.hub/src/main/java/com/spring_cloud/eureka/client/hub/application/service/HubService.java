@@ -5,9 +5,12 @@ import com.spring_cloud.eureka.client.hub.application.dtos.HubRouteResponseDTO;
 import com.spring_cloud.eureka.client.hub.domain.model.Hub;
 import com.spring_cloud.eureka.client.hub.domain.model.HubRoute;
 import com.spring_cloud.eureka.client.hub.domain.service.HubDomainService;
+import com.spring_cloud.eureka.client.hub.infrastructure.repository.HubRepository;
 import com.spring_cloud.eureka.client.hub.presentation.dtos.HubRequestDTO;
 import com.spring_cloud.eureka.client.hub.presentation.dtos.HubRouteRequestDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class HubService {
     private final HubDomainService hubDomainService;
+    private final HubRepository hubRepository;
 
     @Transactional
     public HubResponseDTO createHub(HubRequestDTO hubRequestDTO) {
@@ -135,6 +139,13 @@ public class HubService {
     public void deleteHubPermanently(UUID hubId) {
         hubDomainService.deleteHubPermanently(hubId);
     }
+
+    //검색
+    public Page<HubResponseDTO> searchHubs(HubRequestDTO hubRequestDTO, Pageable pageable) {
+        Page<Hub> hubs = hubRepository.findHubs(hubRequestDTO, pageable);
+        return hubs.map(this::toHubResponseDTO);
+    }
+
 
     private HubResponseDTO toHubResponseDTO(Hub hub) {
         return HubResponseDTO.builder()
