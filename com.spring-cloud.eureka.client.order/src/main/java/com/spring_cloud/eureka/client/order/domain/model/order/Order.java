@@ -57,7 +57,6 @@ public class Order extends BaseEntity {
                                UUID receiverId,
                                int quantity,
                                Long userId,
-                               OrderState orderState,
                                UUID supplierHubId,
                                UUID receiverHubId) {
         return Order.builder()
@@ -66,7 +65,7 @@ public class Order extends BaseEntity {
                 .receiverId(receiverId)
                 .quantity(quantity)
                 .userId(userId)
-                .orderState(orderState)
+                .orderState(OrderState.OrderConfirmation)
                 .supplierHubId(supplierHubId)
                 .receiverHubId(receiverHubId)
                 .build();
