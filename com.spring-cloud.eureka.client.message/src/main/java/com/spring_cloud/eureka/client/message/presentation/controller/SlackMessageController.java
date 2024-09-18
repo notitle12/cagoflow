@@ -1,6 +1,7 @@
-package com.spring_cloud.eureka.client.message.presentation;
+package com.spring_cloud.eureka.client.message.presentation.controller;
 
 import com.spring_cloud.eureka.client.message.application.SlackMessageService;
+import com.spring_cloud.eureka.client.message.presentation.dtos.SlackMessageReqDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

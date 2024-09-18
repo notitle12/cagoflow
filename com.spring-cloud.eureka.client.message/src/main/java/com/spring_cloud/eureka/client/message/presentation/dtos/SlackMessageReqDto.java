@@ -1,4 +1,4 @@
-package com.spring_cloud.eureka.client.message.presentation;
+package com.spring_cloud.eureka.client.message.presentation.dtos;
 
 import lombok.*;
 

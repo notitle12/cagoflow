@@ -1,9 +1,8 @@
 package com.spring_cloud.eureka.client.message.application;
 
-import com.spring_cloud.eureka.client.message.application.SlackService;
 import com.spring_cloud.eureka.client.message.domain.SlackMessage;
 import com.spring_cloud.eureka.client.message.domain.SlackMessageRepository;
-import com.spring_cloud.eureka.client.message.presentation.SlackMessageReqDto;
+import com.spring_cloud.eureka.client.message.presentation.dtos.SlackMessageReqDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

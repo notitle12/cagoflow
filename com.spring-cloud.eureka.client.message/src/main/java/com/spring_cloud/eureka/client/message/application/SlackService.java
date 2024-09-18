@@ -1,6 +1,6 @@
 package com.spring_cloud.eureka.client.message.application;
 
-import com.spring_cloud.eureka.client.message.presentation.SlackMessageReqDto;
+import com.spring_cloud.eureka.client.message.presentation.dtos.SlackMessageReqDto;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
