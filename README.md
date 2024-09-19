@@ -9,7 +9,7 @@
 
 [3. 문제 해결](#3-문제-해결)
 
-[4. 서비스 구성 및 실행 방법](#4-서비스구성-및-실행-방법)
+[4. 서비스 구성 및 실행 방법](#4-서비스구성-및-실행-방법) 
 
 
 
@@ -78,6 +78,7 @@
 - 스프링 시큐리티 및 JWT 인증 시스템 구축
 - 배송담당자 도메인 설계 및 구현
 - 슬랙 메시지 서비스 초안 설계
+- 깃 리포지토리 관리
 
 :arrow_right: 이성원
 본인 역할 :
@@ -92,7 +93,10 @@
 - FeignClient를 사용해 외부 서비스와의 통신 및 데이터 연동 처리
 
 ## 3. 아키텍쳐 구조
-![image](https://teamsparta.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F83c75a39-3aba-4ba4-a792-7aefe4b07895%2F24147ff9-25d6-489e-bd5a-89a58b1ba588%2Fimage.png?table=block&id=f9a145b0-b593-4f02-ae9a-1f6f85e3ff33&spaceId=83c75a39-3aba-4ba4-a792-7aefe4b07895&width=1420&userId=&cache=v2)
+![image](project2END.drawio.png)
+
+## 4. ERD
+![image](https://github.com/user-attachments/assets/4f6b0ecf-3a3a-41f9-99d9-97b38387ce3b)
 
 ## 4. 문제 해결
 :arrow_right: 발생한 문제

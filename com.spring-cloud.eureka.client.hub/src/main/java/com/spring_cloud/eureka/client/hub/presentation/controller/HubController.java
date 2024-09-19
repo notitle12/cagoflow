@@ -3,6 +3,7 @@ package com.spring_cloud.eureka.client.hub.presentation.controller;
 import com.spring_cloud.eureka.client.hub.application.dtos.HubResponseDTO;
 import com.spring_cloud.eureka.client.hub.application.dtos.HubRouteResponseDTO;
 import com.spring_cloud.eureka.client.hub.application.service.HubService;
+import com.spring_cloud.eureka.client.hub.global.dto.ApiResponseDto;
 import com.spring_cloud.eureka.client.hub.presentation.dtos.HubRequestDTO;
 import com.spring_cloud.eureka.client.hub.presentation.dtos.HubRouteRequestDTO;
 import lombok.RequiredArgsConstructor;
@@ -24,82 +25,82 @@ public class HubController {
 
     //hub 생성
     @PostMapping
-    public ResponseEntity<HubResponseDTO> createHub(@RequestBody HubRequestDTO hubRequestDTO) {
+    public ResponseEntity<ApiResponseDto<HubResponseDTO>> createHub(@RequestBody HubRequestDTO hubRequestDTO) {
         HubResponseDTO hubResponseDTO = hubService.createHub(hubRequestDTO);
-        return new ResponseEntity<>(hubResponseDTO, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponseDto<>(HttpStatus.CREATED, "허브 생성 성공", hubResponseDTO));
     }
 
     //hub route 생성
     @PostMapping("/routes")
-    public ResponseEntity<HubRouteResponseDTO> addRouteToHub(
+    public ResponseEntity<ApiResponseDto<HubRouteResponseDTO>> addRouteToHub(
             @RequestBody HubRouteRequestDTO hubRouteRequestDTO) {
         HubRouteResponseDTO hubRouteResponseDTO = hubService.addRouteToHub(hubRouteRequestDTO);
-        return new ResponseEntity<>(hubRouteResponseDTO, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponseDto<>(HttpStatus.CREATED, "허브 경로 생성 성공", hubRouteResponseDTO));
     }
 
     //starthub id 받아 경로 조회 후 해당 경로의 endhub에서도 경로 삭제
     @DeleteMapping("/{hubId}/routes/{routeId}")
-    public ResponseEntity<Void> removeRouteFromHub(
+    public ResponseEntity<ApiResponseDto<Void>> removeRouteFromHub(
             @PathVariable UUID hubId,
             @PathVariable UUID routeId) {
         hubService.removeRouteFromHub(hubId, routeId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponseDto<>(HttpStatus.NO_CONTENT, "허브 경로 삭제 성공", null));
     }
 
     //단일 hub 조회
     @GetMapping("/{hubId}")
-    public ResponseEntity<HubResponseDTO> getHub(@PathVariable UUID hubId) {
+    public ResponseEntity<ApiResponseDto<HubResponseDTO>> getHub(@PathVariable UUID hubId) {
         HubResponseDTO hubResponseDTO = hubService.getHub(hubId);
-        return new ResponseEntity<>(hubResponseDTO, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto<>(HttpStatus.OK, "허브 조회 성공", hubResponseDTO));
     }
 
     // 전체 hub 조회
     @GetMapping
-    public ResponseEntity<List<HubResponseDTO>> getAllHubs() {
+    public ResponseEntity<ApiResponseDto<List<HubResponseDTO>>> getAllHubs() {
         List<HubResponseDTO> hubs = hubService.getAllHubs();
-        return new ResponseEntity<>(hubs, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto<>(HttpStatus.OK, "허브 전체 조회 성공", hubs));
     }
 
     //해당 hub의 모든 hubroute 조회
     @GetMapping("/{hubId}/routes")
-    public ResponseEntity<List<HubRouteResponseDTO>> getHubRoutes(@PathVariable UUID hubId) {
+    public ResponseEntity<ApiResponseDto<List<HubRouteResponseDTO>>> getHubRoutes(@PathVariable UUID hubId) {
         List<HubRouteResponseDTO> hubRouteResponseDTOs = hubService.getHubRoutes(hubId);
-        return new ResponseEntity<>(hubRouteResponseDTOs, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto<>(HttpStatus.OK, "허브 경로 전체 조회 성공", hubRouteResponseDTOs));
     }
 
     //hub 수정
     @PutMapping("/{hubId}")
-    public ResponseEntity<HubResponseDTO> updateHub(
+    public ResponseEntity<ApiResponseDto<HubResponseDTO>> updateHub(
             @PathVariable UUID hubId,
             @RequestBody HubRequestDTO hubRequestDTO) {
         HubResponseDTO hubResponseDTO = hubService.updateHub(hubId, hubRequestDTO);
-        return new ResponseEntity<>(hubResponseDTO, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto<>(HttpStatus.OK, "허브 수정 성공", hubResponseDTO));
     }
 
     //hub 삭제
     @DeleteMapping("/{hubId}/permanent")
-    public ResponseEntity<Void> deleteHubPermanently(@PathVariable UUID hubId) {
+    public ResponseEntity<ApiResponseDto<Void>> deleteHubPermanently(@PathVariable UUID hubId) {
         hubService.deleteHubPermanently(hubId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponseDto<>(HttpStatus.NO_CONTENT, "허브 삭제 성공", null));
     }
 
     //hub 삭제(soft delete)
     @DeleteMapping("/{hubId}")
-    public ResponseEntity<Void> deleteHub(@PathVariable UUID hubId) {
+    public ResponseEntity<ApiResponseDto<Void>> deleteHub(@PathVariable UUID hubId) {
         hubService.deleteHub(hubId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ApiResponseDto<>(HttpStatus.NO_CONTENT, "허브 논리 삭제 성공", null));
     }
 
     //hub 복구 (soft delete 취소)
     @PutMapping("/{hubId}/restore")
-    public ResponseEntity<Void> restoreHub(@PathVariable UUID hubId) {
+    public ResponseEntity<ApiResponseDto<Void>> restoreHub(@PathVariable UUID hubId) {
         hubService.restoreHub(hubId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto<>(HttpStatus.OK, "허브 복구 성공", null));
     }
 
-
+    //search
     @GetMapping("/search")
-    public ResponseEntity<Page<HubResponseDTO>> searchHubs(
+    public ResponseEntity<ApiResponseDto<Page<HubResponseDTO>>> searchHubs(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String zipcode,
             @RequestParam(required = false) String address,
@@ -119,7 +120,7 @@ public class HubController {
 
         Page<HubResponseDTO> hubs = hubService.searchHubs(hubRequestDTO, pageRequest);
 
-        return new ResponseEntity<>(hubs, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto<>(HttpStatus.OK, "허브 검색 성공", hubs));
     }
 
 }

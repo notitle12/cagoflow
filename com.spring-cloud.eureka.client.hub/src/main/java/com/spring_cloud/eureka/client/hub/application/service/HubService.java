@@ -5,6 +5,8 @@ import com.spring_cloud.eureka.client.hub.application.dtos.HubRouteResponseDTO;
 import com.spring_cloud.eureka.client.hub.domain.model.Hub;
 import com.spring_cloud.eureka.client.hub.domain.model.HubRoute;
 import com.spring_cloud.eureka.client.hub.domain.service.HubDomainService;
+import com.spring_cloud.eureka.client.hub.global.exception.CustomException;
+import com.spring_cloud.eureka.client.hub.global.exception.ErrorCode;
 import com.spring_cloud.eureka.client.hub.infrastructure.repository.HubRepository;
 import com.spring_cloud.eureka.client.hub.presentation.dtos.HubRequestDTO;
 import com.spring_cloud.eureka.client.hub.presentation.dtos.HubRouteRequestDTO;
@@ -45,9 +47,9 @@ public class HubService {
     public HubRouteResponseDTO addRouteToHub(HubRouteRequestDTO hubRouteRequestDTO) {
 
         Hub startHub = hubDomainService.getHubById(hubRouteRequestDTO.getStartHubId())
-                .orElseThrow(() -> new RuntimeException("Start Hub not found"));
+                .orElseThrow(() -> new CustomException(ErrorCode.STARTHUB_NOT_FOUND));
         Hub endHub = hubDomainService.getHubById(hubRouteRequestDTO.getEndHubId())
-                .orElseThrow(() -> new RuntimeException("End Hub not found"));
+                .orElseThrow(() -> new CustomException(ErrorCode.ENDHUB_NOT_FOUND));
 
         //hubroute 객체 생성
         HubRoute hubRoute = HubRoute.builder()
@@ -69,7 +71,7 @@ public class HubService {
         HubRoute savedRoute = startHub.getStartRoutes().stream()
                 .filter(route -> route.getRouteDetails().equals(hubRouteRequestDTO.getRouteDetails()))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Route not saved properly"));
+                .orElseThrow(() -> new CustomException(ErrorCode.ROUTE_NOT_SAVED));
 
         return toHubRouteResponseDTO(savedRoute);
     }
@@ -84,7 +86,7 @@ public class HubService {
     public HubResponseDTO getHub(UUID hubId) {
         return hubDomainService.getHubById(hubId)
                 .map(this::toHubResponseDTO)
-                .orElseThrow(() -> new RuntimeException("Hub not found"));
+                .orElseThrow(() -> new CustomException(ErrorCode.HUB_NOT_FOUND));
     }
 
     // 모든 허브 조회
@@ -101,7 +103,7 @@ public class HubService {
     @Transactional(readOnly = true)
     public List<HubRouteResponseDTO> getHubRoutes(UUID hubId) {
         Hub hub = hubDomainService.getHubById(hubId)
-                .orElseThrow(() -> new RuntimeException("Hub not found"));
+                .orElseThrow(() -> new CustomException(ErrorCode.HUB_NOT_FOUND));
 
         // Start Hub와 End Hub 모두로부터 Route를 가져옴.
         List<HubRoute> allRoutes = new ArrayList<>();
@@ -118,7 +120,7 @@ public class HubService {
     @Transactional
     public HubResponseDTO updateHub(UUID hubId, HubRequestDTO hubRequestDTO) {
         Hub hub = hubDomainService.getHubById(hubId)
-                .orElseThrow(() -> new RuntimeException("Hub not found"));
+                .orElseThrow(() -> new CustomException(ErrorCode.HUB_NOT_FOUND));
 
         hub.setName(hubRequestDTO.getName());
         hub.setZipcode(hubRequestDTO.getZipcode());
@@ -151,7 +153,6 @@ public class HubService {
         Page<Hub> hubs = hubRepository.findHubs(hubRequestDTO, pageable);
         return hubs.map(this::toHubResponseDTO);
     }
-
 
     private HubResponseDTO toHubResponseDTO(Hub hub) {
         return HubResponseDTO.builder()
