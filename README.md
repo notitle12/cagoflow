@@ -92,7 +92,7 @@
 - FeignClient를 사용해 외부 서비스와의 통신 및 데이터 연동 처리
 
 ## 3. 아키텍쳐 구조
-![image](https://teamsparta.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F83c75a39-3aba-4ba4-a792-7aefe4b07895%2F24147ff9-25d6-489e-bd5a-89a58b1ba588%2Fimage.png?table=block&id=f9a145b0-b593-4f02-ae9a-1f6f85e3ff33&spaceId=83c75a39-3aba-4ba4-a792-7aefe4b07895&width=1420&userId=&cache=v2)
+![image](https://www.notion.so/teamsparta/6c6fab694136477ab5fa900bc060daed?pvs=4#e8f18ff3e44b468f92578c0ff1759437)
 
 ## 4. 문제 해결
 :arrow_right: 발생한 문제
