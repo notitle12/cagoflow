@@ -9,10 +9,10 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class WeatherService {
 
-    @Value("${weather.api.url}")
+    @Value("${spring.weather.api.url}")
     private String apiUrl;
 
-    @Value("${weather.api.key}")
+    @Value("${spring.weather.api.key}")
     private String apiKey;
 
     private final RestTemplate restTemplate;
