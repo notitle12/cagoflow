@@ -42,6 +42,7 @@
 - 팀장 - 김휘수 :walking:  [Github](https://github.com/notitle12)
 - 팀원 - 위성구 :walking:  [Github](https://github.com/weseonggu)
 - 팀원 - 이성원 :walking:  [Github](https://github.com/lsw71311)
+- 팀원 - 김민철 :walking:  [Github](https://github.com/kmc198989)
 <hr>
 
 ### :flags: 기본 규칙
@@ -70,6 +71,13 @@
 - 허브, 허브 경로 도메인 구현
 - QueryDsl 이용 Search 기능 구현
 - 슬랙 메시지 발송, 날씨 정보 기능 구현
+
+:arrow_right: 김민철
+본인 역할:
+- 업체 및 상품 도메인 설계 및 구현
+- QueryDsl를 활용한 복잡한 검색 기능 개발
+- FeignClient를 사용해 외부 서비스와의 통신 및 데이터 연동 처리
+
 
 ## 3. 문제 해결
 :arrow_right: 발생한 문제
