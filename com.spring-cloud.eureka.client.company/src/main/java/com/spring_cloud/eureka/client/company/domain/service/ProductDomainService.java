@@ -76,5 +76,7 @@ public class ProductDomainService {
         return productRepository.searchProducts(productSearch, pageable);
     }
 
-
+    public void saveProduct(Product product) {
+        productRepository.save(product);
+    }
 }

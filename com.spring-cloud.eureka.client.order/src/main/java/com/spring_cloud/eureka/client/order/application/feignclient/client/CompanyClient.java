@@ -22,7 +22,7 @@ public interface CompanyClient {
     void reduceInventoryRequest( @RequestParam("productId") UUID productId,
                                  @RequestParam("quantity") int quantity);
 
-    @GetMapping("api/companies/hub")
+    @GetMapping("/api/companies/hub")
     HubInformationFromCompanyDTO getHudId( @RequestParam("supplierId") UUID supplierId,
                                            @RequestParam("receiverId") UUID receiverId);
 

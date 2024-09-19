@@ -11,8 +11,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.example.HubInformationFromCompanyDTO;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.webjars.NotFoundException;
 
 import java.util.UUID;
 
@@ -59,13 +61,19 @@ public class CompanyController {
             @ApiResponse(responseCode = "404", description = "수령, 공급 업체 중 데이터가 없음"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @PutMapping("/api/products/reduce")
-    public ResponseEntity<HubInformationFromCompanyDTO> getHudId( @RequestParam("supplierId") UUID supplierId,
-                                                                  @RequestParam("receiverId") UUID receiverId){
-        // Todo: RequestParam으로 들어오는 공급, 수령 업체의id를 가지고 업체의 주소와 소속 허브의id 정보 요철
-        // Todo: 정상: 200번 응답과 데이터, 404번: 수령 공급업체 id 로 find시 둘중하나라도 데이터가 없을 때 , 500번: 조회시 문제 발생
-        return null;
+    @GetMapping("/hub")
+    public ResponseEntity<?> getHubId(@RequestParam("supplierId") UUID supplierId,
+                                      @RequestParam("receiverId") UUID receiverId) {
+        try {
+            HubInformationFromCompanyDTO hubInfo = companyService.getHubIdCompanyAddress(supplierId, receiverId);
+            return ResponseEntity.ok(hubInfo);
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 허브가 존재하지 않습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다.");
+        }
     }
+
 
 
 
