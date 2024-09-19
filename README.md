@@ -39,6 +39,7 @@
 <hr>
 
 ### :busts_in_silhouette: 팀원 소개
+- 팀장 - 김휘수 :walking:  [Github](https://github.com/notitle12)
 - 팀원 - 위성구 :walking:  [Github](https://github.com/weseonggu)
 <hr>
 
@@ -57,10 +58,10 @@
 
 :arrow_right: 김휘수
 본인 역할 :
-- 회원가입 및 로그인 구현
-- 스프링 시큐리티 및 JWT토큰 생성 및 인증 구현
-- 배송담당자 도메인 구현
-- 슬랙메시지 서비스 초안 작성
+- 회원가입 및 로그인 기능 구현
+- 스프링 시큐리티 및 JWT 인증 시스템 구축
+- 배송담당자 도메인 설계 및 구현
+- 슬랙 메시지 서비스 초안 설계
 
 ## 3. 문제 해결
 :arrow_right: 발생한 문제
