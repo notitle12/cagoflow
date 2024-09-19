@@ -103,6 +103,25 @@ public class AuthController {
         return ResponseEntity.ok("사용자가 소프트 삭제되었습니다.");
     }
 
+    // 사용자 소프트 삭제 취소
+    @PatchMapping("/restore/{username}")
+    public ResponseEntity<String> restoreUser(HttpServletRequest request, @PathVariable String username) {
+        // 헤더에서 역할(Role)을 추출
+        String roleHeader = request.getHeader("X-Role");
+
+        // 역할이 없거나, 'MASTER' 권한이 아닌 경우 예외 처리
+        if (roleHeader == null || !roleHeader.equalsIgnoreCase("MASTER")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
+
+        try {
+            authService.restoreUser(username);
+            return ResponseEntity.status(HttpStatus.OK).body("사용자의 소프트 삭제가 취소되었습니다.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
     // 현재 로그인한 사용자의 정보 조회 (헤더에서 사용자 정보 가져오기)
     @GetMapping("/users/me")
     public ResponseEntity<UserInfoResponseDto> getCurrentUserInfo(HttpServletRequest request) {

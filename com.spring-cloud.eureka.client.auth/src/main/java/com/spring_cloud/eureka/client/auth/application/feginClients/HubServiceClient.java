@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.UUID;
 
-@FeignClient(name = "hub-service", url = "http://localhost:19095")  // hub-service의 서비스 이름과 URL
+@FeignClient(name = "HubService", url = "http://localhost:19095")  // hub-service의 서비스 이름과 URL
 public interface HubServiceClient {
 
     @GetMapping("/api/hubs/{hubId}")

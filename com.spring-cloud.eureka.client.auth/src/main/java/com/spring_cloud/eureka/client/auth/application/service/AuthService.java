@@ -103,6 +103,17 @@ public class AuthService {
 
             // 인증이 성공하면 인증된 사용자 정보 가져오기
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            User user = userDetails.getUser();
+
+            // 사용자 삭제 여부 확인
+            if (user.isDeletedSoftly()) {
+                // 삭제된 사용자일 경우 콘솔에 메시지 출력
+                System.out.println("삭제된 유저가 로그인 시도했습니다. Username: " + user.getUsername());
+                throw new RuntimeException("삭제된 사용자입니다.");
+            }
+
+            // 인증이 성공하면 인증된 사용자 정보 가져오기
+//            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
             Long userId = userDetails.getUser().getUserId();
             String username = userDetails.getUsername();
             UserRoleEnum role = userDetails.getUser().getRole();
@@ -135,6 +146,16 @@ public class AuthService {
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
         user.deleteSoftly(username); // BaseEntity의 deleteSoftly 메서드를 호출
+        userRepository.save(user);
+    }
+
+    // 사용자 소프트 삭제 취소
+    @Transactional
+    public void restoreUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+        user.undoDelete(); // User의 restore 메서드 호출
         userRepository.save(user);
     }
 
