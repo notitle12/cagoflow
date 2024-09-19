@@ -79,7 +79,7 @@ public class OrderService {
             }
             throw new TryAgainLaterException("주문 처리 중 오류 발생. 재고는 복구되었습니다.");
         }
-;
+
 
 
     }
@@ -95,7 +95,7 @@ public class OrderService {
         OrderDto orderDto = orderRepository.findById(orderId).map(OrderDto :: of)
                 .orElseThrow(() -> new IllegalArgumentException("주문이 없습니다."));
         // 2. 조회자와 조회한 주문내역서의 주문자와 같은 지 확인
-        if(!(orderDto.getUserId() == userId)){
+        if(!(orderDto.getUserId().equals(userId))){
             throw new DoNotCheckOterDataEception("타인의 데이터는 볼 수 없습니다.");
         }
         return orderDto;

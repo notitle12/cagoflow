@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,8 +47,9 @@ public class OrderController {
     public ResponseEntity<OrderDto> getOrder(@RequestHeader(value = "X-User-Id", required = true) Long userId,
                                              @PathVariable("orderId") UUID orderId) {
         OrderDto orderDto = orderService.findOrderInfo(orderId, userId);
-        return null;
+        return new ResponseEntity<OrderDto>(orderDto, HttpStatus.OK);
     }
+
 
 
 }
