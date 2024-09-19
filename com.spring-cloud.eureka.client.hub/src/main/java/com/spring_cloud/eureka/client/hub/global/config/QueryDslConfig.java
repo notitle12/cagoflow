@@ -1,4 +1,4 @@
-package com.spring_cloud.eureka.client.hub.global;
+package com.spring_cloud.eureka.client.hub.global.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
