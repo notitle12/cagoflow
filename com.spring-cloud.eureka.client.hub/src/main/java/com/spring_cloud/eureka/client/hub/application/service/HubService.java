@@ -9,6 +9,8 @@ import com.spring_cloud.eureka.client.hub.infrastructure.repository.HubRepositor
 import com.spring_cloud.eureka.client.hub.presentation.dtos.HubRequestDTO;
 import com.spring_cloud.eureka.client.hub.presentation.dtos.HubRouteRequestDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -77,6 +79,7 @@ public class HubService {
         hubDomainService.removeRouteFromHub(hubId, routeId);
     }
 
+    @Cacheable(value = "hubs", key = "#hubId")  //메소드의 반환 형태의 객체인 hubresponsedto를 value에 저장
     @Transactional(readOnly = true)
     public HubResponseDTO getHub(UUID hubId) {
         return hubDomainService.getHubById(hubId)
@@ -85,6 +88,7 @@ public class HubService {
     }
 
     // 모든 허브 조회
+    @Cacheable(value = "allHubs")
     @Transactional(readOnly = true)
     public List<HubResponseDTO> getAllHubs() {
         List<Hub> hubs = hubDomainService.getAllHubs();
@@ -93,7 +97,7 @@ public class HubService {
                 .collect(Collectors.toList());
     }
 
-
+    @Cacheable(value = "hubRoutes", key = "#hubId")
     @Transactional(readOnly = true)
     public List<HubRouteResponseDTO> getHubRoutes(UUID hubId) {
         Hub hub = hubDomainService.getHubById(hubId)
@@ -110,6 +114,7 @@ public class HubService {
                 .collect(Collectors.toList());
     }
 
+    @CacheEvict(value = "hubs", key = "#hubId")
     @Transactional
     public HubResponseDTO updateHub(UUID hubId, HubRequestDTO hubRequestDTO) {
         Hub hub = hubDomainService.getHubById(hubId)
@@ -135,6 +140,7 @@ public class HubService {
         hubDomainService.restoreHub(hubId);
     }
 
+    @CacheEvict(value = "allHubs", allEntries = true)
     @Transactional
     public void deleteHubPermanently(UUID hubId) {
         hubDomainService.deleteHubPermanently(hubId);

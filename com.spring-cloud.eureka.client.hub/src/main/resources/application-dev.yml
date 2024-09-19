@@ -17,3 +17,10 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
         default_batch_fetch_size: 1000
+
+  data:
+    redis:
+      host: localhost  # Docker Compose에서 정의한 Redis 서비스 이름 # Docker 외부에서 접근할 경우 localhost 사용
+      port: 25439      # Docker Compose에서 정의한 Redis 서비스 포트
+      password: systempass
+
