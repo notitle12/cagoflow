@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,27 +55,39 @@ public class ProductController {
     @Operation(summary = "상품 차감 ")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "차감 성공"),
-            @ApiResponse(responseCode = "404", description = "해당 상품 없습니다."),
+            @ApiResponse(responseCode = "404", description = "해당 상품이 없습니다."),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @PutMapping("/api/products/reduce")
-    public ResponseEntity<?> reduceInventoryRequest( @RequestParam("productId") UUID productId,
-                                                     @RequestParam("quantity") int quantity){
-        // Todo: RequestParam으로 들어오는 상품의id로 상품의 제고를 차감하는 로직 구현
-        // Todo: 정상 처리시 200번 응답, 상품이 없을 시에는 404응답, 재고 차감시 오류 발생시 500응답
-        return null;
+    @PutMapping("/reduce")
+    public ResponseEntity<?> reduceInventoryRequest(@RequestParam("productId") UUID productId,
+                                                    @RequestParam("quantity") int quantity) {
+        try {
+            productService.reduceInventory(productId, quantity);
+            return ResponseEntity.ok("재고 차감 성공");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 상품이 없습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류");
+        }
     }
+
+
     @Operation(summary = "주문 처리중 문재 발생하여 보상트랜잭션으로 다시 재고 증가 ")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "재고 복구 성공"),
-            @ApiResponse(responseCode = "404", description = "해당 상품 없습니다."),
+            @ApiResponse(responseCode = "404", description = "해당 상품이 없습니다."),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @PutMapping("/api/products/restore")
-    public ResponseEntity<?> restoreInventoryRequest( @RequestParam("productId") UUID productId,
-                                  @RequestParam("quantity") int quantity){
-        // Todo: RequestParam으로 들어오는 상품의id로 상품의 제고를 증가하는 로직 구현
-        // Todo: 정상 처리시 200번 응답, 상품이 없을 시에는 404응답, 재고 증가시 오류 발생시 500응답
-        return null;
+    @PutMapping("/restore")
+    public ResponseEntity<?> restoreInventoryRequest(@RequestParam("productId") UUID productId,
+                                                     @RequestParam("quantity") int quantity) {
+        try {
+            productService.restoreInventory(productId, quantity);
+            return ResponseEntity.ok("재고 복구 성공");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 상품이 없습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류");
+        }
     }
 }

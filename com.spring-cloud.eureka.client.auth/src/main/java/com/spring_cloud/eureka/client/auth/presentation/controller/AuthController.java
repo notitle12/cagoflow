@@ -1,8 +1,10 @@
 package com.spring_cloud.eureka.client.auth.presentation.controller;
 
+import com.spring_cloud.eureka.client.auth.application.execption.GlobalExceptionHandler;
+import com.spring_cloud.eureka.client.auth.application.execption.ValidationException;
 import com.spring_cloud.eureka.client.auth.application.service.AuthService;
 import com.spring_cloud.eureka.client.auth.presentation.requestDto.LoginRequestDto;
-import com.spring_cloud.eureka.client.auth.application.responseDto.SignUpRequestDto;
+import com.spring_cloud.eureka.client.auth.presentation.requestDto.SignUpRequestDto;
 import com.spring_cloud.eureka.client.auth.application.responseDto.UserInfoResponseDto;
 import com.spring_cloud.eureka.client.auth.presentation.requestDto.UserInfoUpdateRequestDto;
 import com.spring_cloud.eureka.client.auth.application.security.JwtUtil;
@@ -13,11 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,22 +32,11 @@ public class AuthController {
     @PostMapping("/sign-up")
     public ResponseEntity<String> signUp(@Valid @RequestBody SignUpRequestDto requestDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            StringBuilder errorMessage = new StringBuilder();
-            for (FieldError fieldError : bindingResult.getFieldErrors()) {
-                errorMessage.append(fieldError.getField()).append(" 필드: ")
-                        .append(fieldError.getDefaultMessage())
-                        .append("; ");
-                log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
-            }
-            return ResponseEntity.badRequest().body(errorMessage.toString());
+            String errorMessage = GlobalExceptionHandler.createValidationErrorMessage(bindingResult);
+            throw new ValidationException(errorMessage);
         }
 
-        try {
-            authService.signUp(requestDto);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-
+        authService.signUp(requestDto);
         return ResponseEntity.ok("회원가입을 성공하였습니다.");
     }
 
@@ -69,7 +56,13 @@ public class AuthController {
     // 본인의 회원정보 수정 (헤더에서 사용자 정보 가져오기)
     @PutMapping("/users/me")
     public ResponseEntity<String> updateUserInfo(
-            @Valid @RequestBody UserInfoUpdateRequestDto updateRequestDto, HttpServletRequest request) {
+            @Valid @RequestBody UserInfoUpdateRequestDto updateRequestDto, BindingResult bindingResult, HttpServletRequest request) {
+
+        // 유효성 검사 오류가 있는 경우, 글로벌 예외 처리기로 넘기기
+        if (bindingResult.hasErrors()) {
+            String errorMessage = GlobalExceptionHandler.createValidationErrorMessage(bindingResult);
+            throw new ValidationException(errorMessage);
+        }
 
         // 헤더에서 사용자 정보 가져오기
         String username = request.getHeader("X-Username");
@@ -79,6 +72,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("사용자 인증 정보가 없습니다.");
         }
 
+        // 검증 실패 시 처리
         try {
             authService.updateUserInfo(username, updateRequestDto);
         } catch (IllegalArgumentException e) {
@@ -114,12 +108,8 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
 
-        try {
-            authService.restoreUser(username);
-            return ResponseEntity.status(HttpStatus.OK).body("사용자의 소프트 삭제가 취소되었습니다.");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+        authService.restoreUser(username);
+        return ResponseEntity.status(HttpStatus.OK).body("사용자의 소프트 삭제가 취소되었습니다.");
     }
 
     // 현재 로그인한 사용자의 정보 조회 (헤더에서 사용자 정보 가져오기)
@@ -128,8 +118,6 @@ public class AuthController {
         // 헤더에서 사용자 정보와 역할(Role)을 추출
         String username = request.getHeader("X-Username");
         String roleHeader = request.getHeader("X-Role");
-
-        log.info("Username: {}, Role: {}", username, roleHeader);
 
         // 필수 헤더 값이 없을 경우 예외 처리
         if (username == null || roleHeader == null) {

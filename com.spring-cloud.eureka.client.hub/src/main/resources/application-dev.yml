@@ -8,7 +8,6 @@ spring:
     url: jdbc:postgresql://localhost:25437/hub
     username: hub
     password: hub
-
   jpa:
     hibernate:
       ddl-auto: update
