@@ -31,22 +31,12 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-
     // MANAGER_TOKEN
     private final String DELIVERY_MANAGER_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
     // MANAGER_TOKEN
     private final String HUB_MANAGER_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
     //MASTER_TOKEN
     private final String MASTER_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
-
-    // 생성자 주입
-//    @Autowired
-//    public AuthService(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserRepository userRepository, PasswordEncoder passwordEncoder) {
-//        this.authenticationManager = authenticationManager;
-//        this.jwtUtil = jwtUtil;
-//        this.userRepository = userRepository;
-//        this.passwordEncoder = passwordEncoder;
-//    }
 
     // 회원가입
     @Transactional
