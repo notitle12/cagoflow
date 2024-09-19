@@ -24,12 +24,12 @@ public class HubDomainService {
 
     @Transactional
     public Optional<Hub> getHubById(UUID hubId) {
-        return hubRepository.findById(hubId);
+        return hubRepository.findByIdAndIsDeleteFalse(hubId);
     }
 
     @Transactional
     public List<Hub> getAllHubs() {
-        return hubRepository.findAll();
+        return hubRepository.findAllByIsDeleteFalse();
     }
 
     @Transactional
