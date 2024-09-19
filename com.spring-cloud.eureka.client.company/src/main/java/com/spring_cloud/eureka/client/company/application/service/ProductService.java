@@ -1,6 +1,7 @@
 package com.spring_cloud.eureka.client.company.application.service;
 
 import com.spring_cloud.eureka.client.company.application.dto.ProductResponseDto;
+import com.spring_cloud.eureka.client.company.domain.model.Product;
 import com.spring_cloud.eureka.client.company.domain.service.ProductDomainService;
 import com.spring_cloud.eureka.client.company.infrastructure.client.HubClient;
 import com.spring_cloud.eureka.client.company.infrastructure.client.HubResponse;
@@ -9,6 +10,7 @@ import com.spring_cloud.eureka.client.company.presentation.request.ProductSearch
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -66,5 +68,27 @@ public class ProductService {
 
     public Page<ProductResponseDto> searchProducts(ProductSearch productSearch) {
         return productDomainService.searchProducts(productSearch).map(ProductResponseDto::fromEntity);
+    }
+
+    // 재고 차감
+    @Transactional
+    public void reduceInventory(UUID productId, int quantity) {
+        Product product = productDomainService.getProductById(productId);
+
+        if (product.getProductQuantity() < quantity) {
+            throw new IllegalArgumentException("재고가 부족합니다.");
+        }
+
+        product.reduceQuantity(quantity);
+        productDomainService.saveProduct(product);
+    }
+
+    // 재고 복구
+    @Transactional
+    public void restoreInventory(UUID productId, int quantity) {
+        Product product = productDomainService.getProductById(productId);
+
+        product.restoreQuantity(quantity);
+        productDomainService.saveProduct(product);
     }
 }

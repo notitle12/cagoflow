@@ -12,6 +12,7 @@ import feign.FeignException;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.ServiceUnavailableException;
 import lombok.RequiredArgsConstructor;
+import org.example.HubInformationFromCompanyDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -82,5 +83,16 @@ public class CompanyService {
 
     public Page<CompanyResponseDto> searchCompany(CompanySearch companySearch) {
         return companyDomainService.searchCompany(companySearch).map(CompanyResponseDto::fromEntity);
+    }
+
+    public HubInformationFromCompanyDTO getHubIdCompanyAddress(UUID supplierId, UUID receiverId) {
+        // 공급업체 정보 조회
+        Company supplier = companyDomainService.getCompanyById(supplierId);
+
+        // 수령업체 정보 조회
+        Company receiver = companyDomainService.getCompanyById(receiverId);
+
+        return new HubInformationFromCompanyDTO(
+                supplier.getHubId(), supplier.getCompanyAddress(), receiver.getHubId(), receiver.getCompanyAddress());
     }
 }

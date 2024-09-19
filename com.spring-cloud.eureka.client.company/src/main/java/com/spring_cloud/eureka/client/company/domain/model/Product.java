@@ -42,4 +42,16 @@ public class Product extends BaseEntity {
         this.hubId = hubId;
     }
 
+    // 재고 차감 메서드
+    public void reduceQuantity(int quantity) {
+        if (this.productQuantity < quantity) {
+            throw new IllegalArgumentException("재고가 부족합니다.");
+        }
+        this.productQuantity -= quantity;
+    }
+
+    // 재고 복구 메서드
+    public void restoreQuantity(int quantity) {
+        this.productQuantity += quantity;
+    }
 }
