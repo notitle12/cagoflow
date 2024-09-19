@@ -94,12 +94,12 @@
 ## 3. 아키텍쳐 구조
 ![image](https://teamsparta.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F83c75a39-3aba-4ba4-a792-7aefe4b07895%2F24147ff9-25d6-489e-bd5a-89a58b1ba588%2Fimage.png?table=block&id=f9a145b0-b593-4f02-ae9a-1f6f85e3ff33&spaceId=83c75a39-3aba-4ba4-a792-7aefe4b07895&width=1420&userId=&cache=v2)
 
-## 3. 문제 해결
+## 4. 문제 해결
 :arrow_right: 발생한 문제
 - 공유 라이브러리를 Maven Repository에 배포 실패
     - AWS S3를 사용하여 배포 (멀티 모듈 프로젝트로 구성으로 해결가능)
 
-## 4. 서비스구성 및 실행 방법
+## 5. 서비스구성 및 실행 방법
 - JAVA 버전 : 17
 
 - 스프링부트 버전 : 3.3.3
