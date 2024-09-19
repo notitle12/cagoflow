@@ -1,11 +1,12 @@
-package com.spring_cloud.eureka.client.auth.controller;
+package com.spring_cloud.eureka.client.auth.presentation.controller;
 
-import com.spring_cloud.eureka.client.auth.application.AuthService;
-import com.spring_cloud.eureka.client.auth.application.dto.LoginRequestDto;
-import com.spring_cloud.eureka.client.auth.application.dto.SignUpRequestDto;
-import com.spring_cloud.eureka.client.auth.application.dto.UserInfoResponseDto;
-import com.spring_cloud.eureka.client.auth.application.dto.UserInfoUpdateRequestDto;
+import com.spring_cloud.eureka.client.auth.application.service.AuthService;
+import com.spring_cloud.eureka.client.auth.presentation.requestDto.LoginRequestDto;
+import com.spring_cloud.eureka.client.auth.application.responseDto.SignUpRequestDto;
+import com.spring_cloud.eureka.client.auth.application.responseDto.UserInfoResponseDto;
+import com.spring_cloud.eureka.client.auth.presentation.requestDto.UserInfoUpdateRequestDto;
 import com.spring_cloud.eureka.client.auth.application.security.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,19 +66,18 @@ public class AuthController {
         return ResponseEntity.ok().headers(headers).body("로그인을 성공하였습니다.");
     }
 
-    // 본인의 회원정보 수정
+    // 본인의 회원정보 수정 (헤더에서 사용자 정보 가져오기)
     @PutMapping("/users/me")
     public ResponseEntity<String> updateUserInfo(
-            @Valid @RequestBody UserInfoUpdateRequestDto updateRequestDto) {
+            @Valid @RequestBody UserInfoUpdateRequestDto updateRequestDto, HttpServletRequest request) {
 
-        // SecurityContext에서 인증 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !(authentication.getPrincipal() instanceof String)) {
+        // 헤더에서 사용자 정보 가져오기
+        String username = request.getHeader("X-Username");
+
+        // 필수 헤더 값이 없을 경우 예외 처리
+        if (username == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("사용자 인증 정보가 없습니다.");
         }
-
-        // 인증된 사용자의 이름 가져오기
-        String username = (String) authentication.getPrincipal();
 
         try {
             authService.updateUserInfo(username, updateRequestDto);
@@ -88,34 +88,52 @@ public class AuthController {
         return ResponseEntity.ok("사용자 정보가 성공적으로 업데이트 되었습니다.");
     }
 
-    @DeleteMapping("/me")
-    public void softDeleteUser() {
-        authService.softDeleteUser();
-    }
+    // 사용자 소프트 삭제 (헤더에서 사용자 정보 가져오기)
+    @DeleteMapping("/users/me")
+    public ResponseEntity<String> softDeleteUser(HttpServletRequest request) {
+        // 헤더에서 사용자 정보 가져오기
+        String username = request.getHeader("X-Username");
 
-    // 현재 로그인한 사용자의 정보 조회
-    @GetMapping("/users/me")
-    public ResponseEntity<UserInfoResponseDto> getCurrentUserInfo() {
-        // SecurityContext에서 인증 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(authentication);
-        // 인증 정보가 없거나 principal이 String이 아닌 경우 예외 처리
-        if (authentication == null || !(authentication.getPrincipal() instanceof String)) {
-            throw new RuntimeException("사용할 수 없는 인증 정보 입니다.");
+        // 필수 헤더 값이 없을 경우 예외 처리
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("사용자 인증 정보가 없습니다.");
         }
 
-        // 인증된 사용자의 이름 가져오기
-        String username = (String) authentication.getPrincipal();
+        authService.softDeleteUser(username);
+        return ResponseEntity.ok("사용자가 소프트 삭제되었습니다.");
+    }
 
-        // 사용자 정보 조회
-        UserInfoResponseDto userInfo = authService.getUserInfo(username);
+    // 현재 로그인한 사용자의 정보 조회 (헤더에서 사용자 정보 가져오기)
+    @GetMapping("/users/me")
+    public ResponseEntity<UserInfoResponseDto> getCurrentUserInfo(HttpServletRequest request) {
+        // 헤더에서 사용자 정보와 역할(Role)을 추출
+        String username = request.getHeader("X-Username");
+        String roleHeader = request.getHeader("X-Role");
+
+        log.info("Username: {}, Role: {}", username, roleHeader);
+
+        // 필수 헤더 값이 없을 경우 예외 처리
+        if (username == null || roleHeader == null) {
+            throw new RuntimeException("헤더에 사용자 정보가 포함되어 있지 않습니다.");
+        }
+
+        // 사용자 정보 조회 (서비스 호출)
+        UserInfoResponseDto userInfo = authService.getUserInfo(username, roleHeader);
         return ResponseEntity.ok(userInfo);
     }
 
     // 모든 사용자 정보 조회 (마스터 권한이 있는 사용자만 가능)
-    @PreAuthorize("hasRole('MASTER')")
     @GetMapping("/users")
-    public ResponseEntity<List<UserInfoResponseDto>> getAllUsers() {
+    public ResponseEntity<List<UserInfoResponseDto>> getAllUsers(HttpServletRequest request) {
+        // 헤더에서 역할(Role)을 추출
+        String roleHeader = request.getHeader("X-Role");
+
+        // 역할이 없거나, 'MASTER' 권한이 아닌 경우 예외 처리
+        if (roleHeader == null || !roleHeader.equalsIgnoreCase("MASTER")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
+
+        // 'MASTER' 권한이 있을 때만 사용자 목록 조회
         List<UserInfoResponseDto> users = authService.getAllUsers();
         return ResponseEntity.ok(users);
     }

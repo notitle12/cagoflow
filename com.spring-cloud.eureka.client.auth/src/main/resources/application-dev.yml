@@ -4,9 +4,9 @@ spring:
   config:
     import: optional:configserver:http://sparta24:sparta24@localhost:9000
   datasource:
-    url: jdbc:postgresql://localhost:5432/b2b
-    username: postgres
-    password: 123456789a
+    url: jdbc:postgresql://localhost:25435/auth
+    username: auth
+    password: auth
   jpa:
     hibernate:
       ddl-auto: update

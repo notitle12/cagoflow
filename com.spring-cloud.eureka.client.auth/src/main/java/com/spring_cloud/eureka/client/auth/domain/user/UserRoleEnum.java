@@ -1,4 +1,4 @@
-package com.spring_cloud.eureka.client.auth.domain;
+package com.spring_cloud.eureka.client.auth.domain.user;
 
 public enum UserRoleEnum {
     COMPANY(Authority.COMPANY),  // 사용자 권한

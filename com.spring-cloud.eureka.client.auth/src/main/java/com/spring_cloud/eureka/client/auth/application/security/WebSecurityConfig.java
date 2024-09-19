@@ -7,20 +7,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Slf4j
 @Configuration
 @EnableWebSecurity // Spring Security 사용을 위한 설정
 @RequiredArgsConstructor
-@EnableGlobalMethodSecurity(prePostEnabled = true) // @PreAuthorize 어노테이션 사용을 위한 설정
 public class WebSecurityConfig {
 
     // 비밀번호 인코더 빈 생성: BCryptPasswordEncoder 사용
@@ -33,12 +30,6 @@ public class WebSecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
-    }
-
-    // JWT 인증 필터를 생성
-    @Bean
-    public CustomPreAuthFilter jwtAuthorizationFilter() {
-        return new CustomPreAuthFilter();
     }
 
     @Bean
@@ -59,12 +50,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/auth/**").permitAll() // '/api/v1/auth/'로 시작하는 요청 모두 접근 허가
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
-        // 필터 관리
-//        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
 
-        // HttpSecurity 객체를 기반으로 SecurityFilterChain을 생성
-        log.info("SecurityFilterChain configured with JWT Authorization Filter");
         return http.build();
     }
 }

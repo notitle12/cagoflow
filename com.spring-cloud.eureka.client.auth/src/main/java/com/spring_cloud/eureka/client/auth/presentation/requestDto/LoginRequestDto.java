@@ -1,4 +1,4 @@
-package com.spring_cloud.eureka.client.auth.application.dto;
+package com.spring_cloud.eureka.client.auth.presentation.requestDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
