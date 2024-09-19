@@ -8,10 +8,15 @@ import com.spring_cloud.eureka.client.company.infrastructure.client.HubClient;
 import com.spring_cloud.eureka.client.company.infrastructure.client.HubResponse;
 import com.spring_cloud.eureka.client.company.presentation.request.CompanyRequest;
 import com.spring_cloud.eureka.client.company.presentation.request.CompanySearch;
+import feign.FeignException;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.ServiceUnavailableException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -59,11 +64,21 @@ public class CompanyService {
     }
 
     private void validateHubId(UUID hubId) {
-        HubResponse hubResponse = hubClient.getHubById(hubId);
-        if (hubResponse == null) {
-            throw new IllegalArgumentException("유효하지 않은 허브 ID 입니다.");
+        try {
+            HubResponse hubResponse = hubClient.getHubById(hubId);
+        } catch (FeignException.NotFound e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 허브가 존재하지 않습니다.");
+        } catch (FeignException.BadRequest e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "허브 ID가 유효하지 않습니다.");
+        } catch (FeignException.GatewayTimeout e) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "허브 서비스가 응답하지 않습니다. 나중에 다시 시도해 주세요.");
+        } catch (FeignException.ServiceUnavailable e) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "허브 서비스가 현재 사용할 수 없습니다.");
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "예기치 않은 오류가 발생했습니다.");
         }
     }
+
 
     public Page<CompanyResponseDto> searchCompany(CompanySearch companySearch) {
         return companyDomainService.searchCompany(companySearch).map(CompanyResponseDto::fromEntity);
