@@ -41,6 +41,7 @@
 ### :busts_in_silhouette: 팀원 소개
 - 팀장 - 김휘수 :walking:  [Github](https://github.com/notitle12)
 - 팀원 - 위성구 :walking:  [Github](https://github.com/weseonggu)
+- 팀원 - 이성원 :walking:  [Github](https://github.com/lsw71311)
 <hr>
 
 ### :flags: 기본 규칙
@@ -62,6 +63,12 @@
 - 스프링 시큐리티 및 JWT 인증 시스템 구축
 - 배송담당자 도메인 설계 및 구현
 - 슬랙 메시지 서비스 초안 설계
+
+:arrow_right: 이성원
+본인 역할 :
+- 허브, 허브 경로 도메인 구현
+- QueryDsl 이용 Search 기능 구현
+- 슬랙 메시지 발송, 날씨 정보 기능 구현
 
 ## 3. 문제 해결
 :arrow_right: 발생한 문제
