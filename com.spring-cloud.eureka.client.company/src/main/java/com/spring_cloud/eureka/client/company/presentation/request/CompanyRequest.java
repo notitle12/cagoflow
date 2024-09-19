@@ -1,20 +1,25 @@
 package com.spring_cloud.eureka.client.company.presentation.request;
 
+import com.spring_cloud.eureka.client.company.domain.enums.CompanyType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 @Getter
-@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CompanyRequest {
 
-    private String name;
+    private String companyName;
 
-    private String type; // 생산업체, 수령업체 등
+    private CompanyType companyType; // 생산업체, 수령업체 등
 
     private UUID hubId; // 허브 ID
 
-    private String address;
+    private Long userId;
+
+    private String companyAddress;
 
 }
