@@ -2,13 +2,18 @@ package com.spring_cloud.eureka.client.order.presentaion;
 
 import com.spring_cloud.eureka.client.order.application.aspect.annotation.CheckPermission;
 import com.spring_cloud.eureka.client.order.application.dtos.OrderDto;
+import com.spring_cloud.eureka.client.order.application.dtos.ResponseOrderInfoDto;
 import com.spring_cloud.eureka.client.order.application.service.OrderService;
 import com.spring_cloud.eureka.client.order.presentaion.dtos.RequestOrderDto;
+import com.spring_cloud.eureka.client.order.presentaion.dtos.RequestSearchOrderDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -50,7 +55,16 @@ public class OrderController {
         return new ResponseEntity<OrderDto>(orderDto, HttpStatus.OK);
     }
 
+    @Operation(summary = "주문 전체 조회 api")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "주문 목록"),
+            @ApiResponse(responseCode = "404", description = "해당 주문은 없습니다.")
+    })
+    public Page<ResponseOrderInfoDto> findyAll(@RequestBody RequestSearchOrderDto orderDto,
+                                               @PageableDefault(size = 10) Pageable pageable) {
+        return orderService.findAllOrderService(orderDto,pageable);
 
+    }
 
 
 
