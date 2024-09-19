@@ -26,6 +26,9 @@ public class DeliveryManager extends BaseEntity {
     @Column(name = "hub_id", nullable = true)
     private UUID hubId;  // 허브 ID (업체 배송 담당자의 경우)
 
+    @Column(name = "hub_name", nullable = true)
+    private String hubName;
+
     @Column(name = "slack_email", nullable = false)
     private String slackEmail;
 
@@ -37,5 +40,13 @@ public class DeliveryManager extends BaseEntity {
     // DeliveryManager.java (엔티티)
     public void updateDeliveryType(DeliveryTypeRoleEnum newDeliveryType) {
         this.deliveryTypeRoleEnum = newDeliveryType;
+    }
+
+    public void setHubId(UUID hubId) {
+        this.hubId = hubId;
+    }
+
+    public void setHubName(String hubName) {
+        this.hubName = hubName;
     }
 }
