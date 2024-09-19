@@ -11,6 +11,7 @@ import com.spring_cloud.eureka.client.company.presentation.request.CompanySearch
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -20,7 +21,7 @@ public class CompanyService {
 
     private final CompanyDomainService companyDomainService;
     private final HubClient hubClient;
-
+    private final ProductService productService;
 
     public void createCompany(CompanyRequest companyRequest) {
         validateHubId(companyRequest.getHubId());
@@ -46,8 +47,10 @@ public class CompanyService {
         );
     }
 
+    @Transactional
     public void deleteCompany(UUID companyId, String deleteBy) {
         companyDomainService.deleteCompany(companyId, deleteBy);
+        productService.deleteProductsByCompanyId(companyId, deleteBy);
     }
 
     public CompanyResponseDto getCompanyById(UUID companyId) {

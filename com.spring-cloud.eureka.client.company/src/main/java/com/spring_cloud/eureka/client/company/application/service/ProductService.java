@@ -1,6 +1,5 @@
 package com.spring_cloud.eureka.client.company.application.service;
 
-import com.spring_cloud.eureka.client.company.application.dto.CompanyResponseDto;
 import com.spring_cloud.eureka.client.company.application.dto.ProductResponseDto;
 import com.spring_cloud.eureka.client.company.domain.service.ProductDomainService;
 import com.spring_cloud.eureka.client.company.infrastructure.client.HubClient;
@@ -49,12 +48,13 @@ public class ProductService {
         productDomainService.deleteProduct(productId, deletedBy);
     }
 
-    public Page<ProductResponseDto> searchProducts(ProductSearch productSearch) {
-        return productDomainService.searchProducts(productSearch).map(ProductResponseDto::fromEntity);
+    public void deleteProductsByCompanyId(UUID companyId, String deletedBy) {
+        productDomainService.deleteProductsByCompanyId(companyId, deletedBy);
     }
 
-    public ProductResponseDto getProductById(UUID companyId) {
-        return ProductResponseDto.fromEntity(productDomainService.getProductById(companyId));
+
+    public ProductResponseDto getProductById(UUID productId) {
+        return ProductResponseDto.fromEntity(productDomainService.getProductById(productId));
     }
 
     private void validateHubId(UUID hubId) {
@@ -64,4 +64,7 @@ public class ProductService {
         }
     }
 
+    public Page<ProductResponseDto> searchProducts(ProductSearch productSearch) {
+        return productDomainService.searchProducts(productSearch).map(ProductResponseDto::fromEntity);
+    }
 }
