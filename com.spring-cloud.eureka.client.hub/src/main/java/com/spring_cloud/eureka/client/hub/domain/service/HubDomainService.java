@@ -2,6 +2,8 @@ package com.spring_cloud.eureka.client.hub.domain.service;
 
 import com.spring_cloud.eureka.client.hub.domain.model.Hub;
 import com.spring_cloud.eureka.client.hub.domain.model.HubRoute;
+import com.spring_cloud.eureka.client.hub.global.exception.CustomException;
+import com.spring_cloud.eureka.client.hub.global.exception.ErrorCode;
 import com.spring_cloud.eureka.client.hub.infrastructure.repository.HubRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +42,7 @@ public class HubDomainService {
     @Transactional
     public Hub addRouteToHub(UUID hubId, HubRoute hubRoute) {
         Hub hub = hubRepository.findById(hubId)
-                .orElseThrow(() -> new RuntimeException("Hub not found"));
+                .orElseThrow(() -> new CustomException(ErrorCode.HUB_NOT_FOUND));
 
         hub.addRoute(hubRoute);
         return hubRepository.save(hub);
@@ -50,17 +52,17 @@ public class HubDomainService {
     public void removeRouteFromHub(UUID hubId, UUID routeId) {
         // 1. startHub 조회 (Hub에서 route 삭제는 항상 Hub를 통해 이루어져야 함)
         Hub startHub = hubRepository.findById(hubId)
-                .orElseThrow(() -> new EntityNotFoundException("Hub not found"));
+                .orElseThrow(() -> new CustomException(ErrorCode.HUB_NOT_FOUND));
 
         // 2. startHub에서 해당 Route 찾기
         HubRoute routeToDelete = startHub.getStartRoutes().stream()
                 .filter(route -> route.getId().equals(routeId))
                 .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Route not found in this Hub"));
+                .orElseThrow(() -> new CustomException(ErrorCode.ROUTE_NOT_FOUND_IN_HUB));
 
         // 3. 관련된 endHub 조회
         Hub endHub = hubRepository.findById(routeToDelete.getEndHub().getId())
-                .orElseThrow(() -> new EntityNotFoundException("End Hub not found"));
+                .orElseThrow(() -> new CustomException(ErrorCode.HUB_NOT_FOUND));
 
         // 4. startHub와 endHub에서 Route 제거
         startHub.removeRoute(routeToDelete);
@@ -74,7 +76,7 @@ public class HubDomainService {
     @Transactional
     public void softDeleteHub(UUID hubId) {
         Hub hub = hubRepository.findById(hubId)
-                .orElseThrow(() -> new RuntimeException("Hub not found"));
+                .orElseThrow(() -> new CustomException(ErrorCode.HUB_NOT_FOUND));
         hub.setIsDelete(true);
         hubRepository.save(hub);
     }
@@ -82,7 +84,7 @@ public class HubDomainService {
     @Transactional
     public void restoreHub(UUID hubId) {
         Hub hub = hubRepository.findById(hubId)
-                .orElseThrow(() -> new RuntimeException("Hub not found"));
+                .orElseThrow(() -> new CustomException(ErrorCode.HUB_NOT_FOUND));
         hub.setIsDelete(false);
         hubRepository.save(hub);
     }
