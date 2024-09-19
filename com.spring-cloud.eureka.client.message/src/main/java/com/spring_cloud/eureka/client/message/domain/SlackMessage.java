@@ -20,7 +20,7 @@ public class SlackMessage extends BaseEntity {
     private UUID id;
 
     @Column(name = "receiver_id", nullable = false)
-    private Long receiverId;
+    private String receiverId;
 
     @Column(name = "message", nullable = false)
     private String message;
