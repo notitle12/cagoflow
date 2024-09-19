@@ -2,6 +2,7 @@ package com.spring_cloud.eureka.client.order.application.feignclient.client;
 
 import org.example.CompanyIdAndStockInfoDto;
 import org.example.HubInformationFromCompanyDTO;
+import org.example.ProductResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,18 +15,18 @@ import java.util.UUID;
 @FeignClient(name = "CompanyService")
 public interface CompanyClient {
 
-    @GetMapping("company/product/{id}")
-    CompanyIdAndStockInfoDto findById(@PathVariable("id") UUID id);
+    @GetMapping("/api/products/{id}")
+    ProductResponseDto findById(@PathVariable("id") UUID id);
 
-    @PutMapping("company/product/reduce")
+    @PutMapping("/api/products/reduce")
     void reduceInventoryRequest( @RequestParam("productId") UUID productId,
                                  @RequestParam("quantity") int quantity);
 
-    @GetMapping("company/hub")
+    @GetMapping("api/companies/hub")
     HubInformationFromCompanyDTO getHudId( @RequestParam("supplierId") UUID supplierId,
                                            @RequestParam("receiverId") UUID receiverId);
 
-    @PutMapping("company/product/restore")
+    @PutMapping("/api/products/restore")
     void restoreInventoryRequest( @RequestParam("productId") UUID productId,
                                   @RequestParam("quantity") int quantity);
 }
