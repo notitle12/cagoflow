@@ -25,6 +25,9 @@ public class HubRepositoryImpl implements HubRepositoryCustom {
 
         BooleanBuilder whereBuilder = new BooleanBuilder(); // 동적으로 조건 추가할 수 있게 해주는 객체
 
+        // 소프트 삭제된 허브는 제외 (isDelete가 false인 것만 조회)
+        whereBuilder.and(hub.isDelete.isFalse());
+
         // 검색 조건 추가
         if (hubRequestDTO.getName() != null && !hubRequestDTO.getName().isEmpty()) {
             whereBuilder.and(hub.name.containsIgnoreCase(hubRequestDTO.getName()));
