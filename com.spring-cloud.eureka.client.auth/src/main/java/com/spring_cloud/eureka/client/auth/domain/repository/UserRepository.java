@@ -1,5 +1,6 @@
-package com.spring_cloud.eureka.client.auth.domain;
+package com.spring_cloud.eureka.client.auth.domain.repository;
 
+import com.spring_cloud.eureka.client.auth.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

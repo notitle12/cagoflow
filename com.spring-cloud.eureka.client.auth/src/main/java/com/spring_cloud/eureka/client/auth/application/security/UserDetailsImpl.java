@@ -1,7 +1,7 @@
 package com.spring_cloud.eureka.client.auth.application.security;
 
-import com.spring_cloud.eureka.client.auth.domain.User;
-import com.spring_cloud.eureka.client.auth.domain.UserRoleEnum;
+import com.spring_cloud.eureka.client.auth.domain.user.User;
+import com.spring_cloud.eureka.client.auth.domain.user.UserRoleEnum;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

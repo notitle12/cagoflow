@@ -1,4 +1,4 @@
-package com.spring_cloud.eureka.client.auth.application.dto;
+package com.spring_cloud.eureka.client.auth.application.responseDto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

@@ -1,7 +1,7 @@
 package com.spring_cloud.eureka.client.auth.application.security;
 
-import com.spring_cloud.eureka.client.auth.domain.User;
-import com.spring_cloud.eureka.client.auth.domain.UserRepository;
+import com.spring_cloud.eureka.client.auth.domain.user.User;
+import com.spring_cloud.eureka.client.auth.domain.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
