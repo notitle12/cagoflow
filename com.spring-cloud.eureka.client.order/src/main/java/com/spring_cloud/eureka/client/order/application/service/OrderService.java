@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.CompanyIdAndStockInfoDto;
 import org.example.HubInformationFromCompanyDTO;
+import org.example.ProductResponseDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,31 +36,26 @@ public class OrderService {
     public void createOrderService(RequestOrderDto orderDto, Long userId) {
         // 1. company 서비스로 상품의 공급업체 id랑 상품의 재고를 가져옴
         try{
-            CompanyIdAndStockInfoDto productinfo = companyClient.findById(orderDto.getProductId());
+            ProductResponseDto productinfo = companyClient.findById(orderDto.getProductId());
             // 1-1. 주문한 상품이 업체의 상품인지 확인
-            if (!productinfo.getConpanyId().equals(orderDto.getSupplierId())) {
+            if (!productinfo.getCompanyId().equals(orderDto.getSupplierId())) {
                 throw new IllegalArgumentException("업체에 없는 상품입니다.");
             }
             // 1-2. 주문수량이 재고 보다 적은지 확인
-            if(!(productinfo.getQuantity()>orderDto.getQuantity())){
+            if(!(productinfo.getProductQuantity()>orderDto.getQuantity())){
                 throw new IllegalArgumentException("재고가 모자랍니다.");
             }
         }catch (FeignException.NotFound e){
             // 404 응답
             throw new IllegalArgumentException("상품이 없습니다.");
-        }catch (FeignException.BadGateway e){
-            // 400 응답
+        }catch (FeignException.InternalServerError e){
             throw new TryAgainLaterException("나중에 다시 시도해주세요");
-        }catch (FeignException e){
-            throw e;
         }
 
         // 2. 상품의 재고를 차감 요청 -> rabbitMQ로 대채 가능
         try{
             companyClient.reduceInventoryRequest(orderDto.getProductId(), orderDto.getQuantity());
-        }catch (FeignException.BadGateway e){
-            throw new TryAgainLaterException("나중에 다시 시도해주세요");
-        }catch (FeignException e){
+        }catch (FeignException.NotFound | FeignException.InternalServerError e){
             throw new TryAgainLaterException("나중에 다시 시도해주세요");
         }
 

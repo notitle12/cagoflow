@@ -15,15 +15,20 @@ public class OrderDomainService {
     private final OrderRepository orderRepository;
 
     @Transactional
-    public void saveOrder(RequestOrderDto orderDto, HubInformationFromCompanyDTO hubInfo, Long userId) {
-        Order order = Order.create(orderDto.getProductId(),
-                orderDto.getSupplierId(),
-                orderDto.getReceiverId(),
-                orderDto.getQuantity(),
-                userId,
-                hubInfo.getSupplierHubId(),
-                hubInfo.getReceiverHubId());
-        orderRepository.save(order);
+    public void saveOrder(RequestOrderDto orderDto, HubInformationFromCompanyDTO hubInfo, Long userId) throws Exception {
+        try{
+            Order order = Order.create(orderDto.getProductId(),
+                    orderDto.getSupplierId(),
+                    orderDto.getReceiverId(),
+                    orderDto.getQuantity(),
+                    userId,
+                    hubInfo.getSupplierHubId(),
+                    hubInfo.getReceiverHubId());
+            orderRepository.save(order);
+        }catch(Exception e){
+            throw e;
+        }
+
     }
 
 
