@@ -35,3 +35,4 @@ out/
 
 ### VS Code ###
 .vscode/
+com.spring-cloud.eureka.client.message/gradle.properties
