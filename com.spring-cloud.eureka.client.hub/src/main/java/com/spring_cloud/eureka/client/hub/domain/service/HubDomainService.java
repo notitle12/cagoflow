@@ -96,4 +96,8 @@ public class HubDomainService {
     public void saveHub(Hub hub) {
         hubRepository.save(hub);
     }
+
+    public long countHubs() {
+        return hubRepository.count();
+    }
 }
