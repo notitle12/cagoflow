@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -43,9 +44,18 @@ public class ProductDomainService {
         productRepository.save(product);
     }
 
+    @Transactional
+    public void deleteProductsByCompanyId(UUID companyId, String deleteBy) {
+        List<Product> products = productRepository.findByCompanyIdAndIsDeleteFalse(companyId);
+        for (Product product : products) {
+            product.deleteSoftly(deleteBy);
+            productRepository.save(product);
+        }
+    }
+
     @Transactional(readOnly = true)
     public Product getProductById(UUID productId) {
-        return productRepository.findById(productId)
+        return productRepository.findByProductIdAndIsDeleteFalse(productId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
     }
 
@@ -65,4 +75,6 @@ public class ProductDomainService {
         Pageable pageable = PageRequest.of(productSearch.getPage(), productSearch.getSize(), sort);
         return productRepository.searchProducts(productSearch, pageable);
     }
+
+
 }

@@ -50,7 +50,7 @@ public class CompanyDomainService {
 
     @Transactional(readOnly = true)
     public Company getCompanyById(UUID companyId) {
-        return companyRepository.findById(companyId)
+        return companyRepository.findByCompanyIdAndIsDeleteFalse(companyId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 업체입니다."));
     }
 

@@ -25,9 +25,9 @@ public class ProductController {
         return ResponseEntity.created(URI.create("/api/products")).build();
     }
 
-    @GetMapping("/{companyId}")
-    public ResponseEntity<ProductResponseDto> getCompanyById(@PathVariable("companyId") UUID companyId) {
-        return ResponseEntity.ok(productService.getProductById(companyId));
+    @GetMapping("/{productId}")
+    public ResponseEntity<ProductResponseDto> getProductById(@PathVariable("productId") UUID productId) {
+        return ResponseEntity.ok(productService.getProductById(productId));
     }
 
     @PutMapping("/{productId}")
