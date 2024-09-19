@@ -1,7 +1,7 @@
 package com.spring_cloud.eureka.client.auth.application.service;
 
 import com.spring_cloud.eureka.client.auth.presentation.requestDto.LoginRequestDto;
-import com.spring_cloud.eureka.client.auth.application.responseDto.SignUpRequestDto;
+import com.spring_cloud.eureka.client.auth.presentation.requestDto.SignUpRequestDto;
 import com.spring_cloud.eureka.client.auth.application.responseDto.UserInfoResponseDto;
 import com.spring_cloud.eureka.client.auth.presentation.requestDto.UserInfoUpdateRequestDto;
 import com.spring_cloud.eureka.client.auth.application.security.JwtUtil;
@@ -11,9 +11,11 @@ import com.spring_cloud.eureka.client.auth.domain.repository.UserRepository;
 import com.spring_cloud.eureka.client.auth.domain.user.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -120,8 +122,11 @@ public class AuthService {
 
             // JWT 토큰 생성
             return jwtUtil.createToken(userId, username, role);
+        } catch (UsernameNotFoundException | BadCredentialsException e) {
+            throw new BadCredentialsException("아이디 또는 비밀번호가 잘못되었습니다.");
         } catch (AuthenticationException e) {
-            throw new RuntimeException("Invalid username or password");
+            // 인증 관련 일반 예외
+            throw new RuntimeException("인증 오류 발생: " + e.getMessage());
         }
     }
 
