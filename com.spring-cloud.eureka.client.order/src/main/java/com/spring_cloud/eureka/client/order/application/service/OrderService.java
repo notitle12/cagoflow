@@ -1,18 +1,22 @@
 package com.spring_cloud.eureka.client.order.application.service;
 
 import com.spring_cloud.eureka.client.order.application.dtos.OrderDto;
+import com.spring_cloud.eureka.client.order.application.dtos.ResponseOrderInfoDto;
 import com.spring_cloud.eureka.client.order.application.exception.exceptionsdefined.DoNotCheckOterDataEception;
 import com.spring_cloud.eureka.client.order.application.exception.exceptionsdefined.TryAgainLaterException;
 import com.spring_cloud.eureka.client.order.application.feignclient.client.CompanyClient;
 import com.spring_cloud.eureka.client.order.domain.repository.OrderRepository;
 import com.spring_cloud.eureka.client.order.domain.service.OrderDomainService;
+import com.spring_cloud.eureka.client.order.infrastructure.OrderRepositoryCustom;
 import com.spring_cloud.eureka.client.order.presentaion.dtos.RequestOrderDto;
+import com.spring_cloud.eureka.client.order.presentaion.dtos.RequestSearchOrderDto;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.CompanyIdAndStockInfoDto;
 import org.example.HubInformationFromCompanyDTO;
 import org.example.ProductResponseDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +30,7 @@ public class OrderService {
     private final OrderDomainService orderDomainService;
     private final CompanyClient companyClient;
     private final OrderRepository orderRepository;
+    private final OrderRepositoryCustom orderRepositoryCustom;
 
     /**
      * 주문 등록
@@ -49,6 +54,7 @@ public class OrderService {
             // 404 응답
             throw new IllegalArgumentException("상품이 없습니다.");
         }catch (FeignException.InternalServerError e){
+            // 500 응답
             throw new TryAgainLaterException("나중에 다시 시도해주세요");
         }
 
@@ -56,6 +62,7 @@ public class OrderService {
         try{
             companyClient.reduceInventoryRequest(orderDto.getProductId(), orderDto.getQuantity());
         }catch (FeignException.NotFound | FeignException.InternalServerError e){
+            // 404, 500 응답
             throw new TryAgainLaterException("나중에 다시 시도해주세요");
         }
 
@@ -95,5 +102,9 @@ public class OrderService {
             throw new DoNotCheckOterDataEception("타인의 데이터는 볼 수 없습니다.");
         }
         return orderDto;
+    }
+
+    public Page<ResponseOrderInfoDto> findAllOrderService(RequestSearchOrderDto orderDto, Pageable pageable) {
+        return orderRepositoryCustom.findAllOrder(pageable, orderDto);
     }
 }
