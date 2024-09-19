@@ -8,6 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SlackMessageReqDto {
-    private Long receiverId;
+    private String receiverId;
     private String message;
 }
