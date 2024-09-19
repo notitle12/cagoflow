@@ -95,6 +95,9 @@
 ## 3. 아키텍쳐 구조
 ![image](project2END.drawio.png)
 
+## 4. ERD
+![image](https://github.com/user-attachments/assets/4f6b0ecf-3a3a-41f9-99d9-97b38387ce3b)
+
 ## 4. 문제 해결
 :arrow_right: 발생한 문제
 - 공유 라이브러리를 Maven Repository에 배포 실패
