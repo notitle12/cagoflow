@@ -18,3 +18,8 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
         default_batch_fetch_size: 1000
+
+  weather:
+    api:
+      url: "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst"
+      key: "KTDTZEmGIC7Ai0q6JDHPM416teba6Io6GVuSdz%2FsnQC5rFY6SUxY1QJcCP5D8LTJg35ov3dQ%2BZOcr4jbDxxrPw%3D%3D"
