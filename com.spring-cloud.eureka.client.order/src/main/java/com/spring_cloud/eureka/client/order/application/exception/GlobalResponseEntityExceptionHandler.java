@@ -1,6 +1,9 @@
 package com.spring_cloud.eureka.client.order.application.exception;
 
 import com.spring_cloud.eureka.client.order.application.exception.exceptionsdefined.AccessDeniedException;
+import com.spring_cloud.eureka.client.order.application.exception.exceptionsdefined.DoNotCheckOterDataEception;
+import com.spring_cloud.eureka.client.order.application.exception.exceptionsdefined.TryAgainLaterException;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -45,10 +48,30 @@ public class GlobalResponseEntityExceptionHandler extends ResponseEntityExceptio
         FailMessage message = new FailMessage(LocalDateTime.now(), request.getDescription(false), errorMessages);
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(DoNotCheckOterDataEception.class)
+    public final ResponseEntity<FailMessage> handeleDoNotCheckOterDataEception(Exception ex, WebRequest request) throws Exception{
+        FailMessage message = new FailMessage(LocalDateTime.now(), request.getDescription(false), List.of(ex.getMessage()));
+        return new ResponseEntity<FailMessage>(message,HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public final ResponseEntity<FailMessage> handeleIllegalArgumentException(Exception ex, WebRequest request) throws Exception{
+        FailMessage message = new FailMessage(LocalDateTime.now(), request.getDescription(false), List.of(ex.getMessage()));
+        return new ResponseEntity<FailMessage>(message,HttpStatus.NOT_FOUND);
+    }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public final ResponseEntity<FailMessage> handeleNoAccessToOtherPeopleDataException(Exception ex, WebRequest request) throws Exception{
+    public final ResponseEntity<FailMessage> handeleAccessDeniedException(Exception ex, WebRequest request) throws Exception{
         FailMessage message = new FailMessage(LocalDateTime.now(), request.getDescription(false), List.of(ex.getMessage()));
         return new ResponseEntity<FailMessage>(message,HttpStatus.UNAUTHORIZED);
+    }
+    @ExceptionHandler(TryAgainLaterException.class)
+    public final ResponseEntity<FailMessage> handeleTryAgainLaterException(Exception ex, WebRequest request) throws Exception{
+        FailMessage message = new FailMessage(LocalDateTime.now(), request.getDescription(false), List.of(ex.getMessage()));
+        return new ResponseEntity<FailMessage>(message,HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(FeignException.class)
+    public final ResponseEntity<FailMessage> handeleFeignException(FeignException ex, WebRequest request) throws Exception{
+        FailMessage message = new FailMessage(LocalDateTime.now(), request.getDescription(false), List.of(ex.getMessage()));
+        return new ResponseEntity<FailMessage>(message,HttpStatus.NOT_FOUND);
     }
 }
