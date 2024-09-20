@@ -1,4 +1,4 @@
-package com.spring_cloud.eureka.client.order.application.feignclient.client;
+package com.spring_cloud.eureka.client.order.infrastructure.feignclient.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 

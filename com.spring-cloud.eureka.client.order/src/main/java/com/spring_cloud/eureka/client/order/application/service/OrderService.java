@@ -4,7 +4,7 @@ import com.spring_cloud.eureka.client.order.application.dtos.OrderDto;
 import com.spring_cloud.eureka.client.order.application.dtos.ResponseOrderInfoDto;
 import com.spring_cloud.eureka.client.order.application.exception.exceptionsdefined.DoNotCheckOterDataEception;
 import com.spring_cloud.eureka.client.order.application.exception.exceptionsdefined.TryAgainLaterException;
-import com.spring_cloud.eureka.client.order.application.feignclient.client.CompanyClient;
+import com.spring_cloud.eureka.client.order.infrastructure.feignclient.client.CompanyClient;
 import com.spring_cloud.eureka.client.order.domain.repository.OrderRepository;
 import com.spring_cloud.eureka.client.order.domain.service.OrderDomainService;
 import com.spring_cloud.eureka.client.order.infrastructure.OrderRepositoryCustom;

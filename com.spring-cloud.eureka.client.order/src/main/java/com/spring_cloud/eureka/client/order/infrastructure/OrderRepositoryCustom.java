@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.spring_cloud.eureka.client.order.application.dtos.QResponseOrderInfoDto;
 import com.spring_cloud.eureka.client.order.application.dtos.ResponseOrderInfoDto;
+import com.spring_cloud.eureka.client.order.domain.model.order.Order;
 import com.spring_cloud.eureka.client.order.domain.model.order.OrderState;
 import com.spring_cloud.eureka.client.order.domain.model.order.QOrder;
 import com.spring_cloud.eureka.client.order.presentaion.dtos.RequestSearchOrderDto;
@@ -12,6 +13,7 @@ import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
@@ -21,7 +23,7 @@ import java.util.UUID;
 import static com.spring_cloud.eureka.client.order.domain.model.order.QOrder.order;
 import static org.springframework.util.StringUtils.hasText;
 @Repository
-public class OrderRepositoryCustom {
+public class OrderRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;
 
