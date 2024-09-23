@@ -1,13 +1,16 @@
 package com.spring_cloud.eureka.client.company.application.dto;
 
 import com.spring_cloud.eureka.client.company.domain.model.Company;
+import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.AllArgsConstructor;
 
 import java.util.UUID;
 
 @Getter
-@Setter
+@Builder(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class CompanyResponseDto {
     private UUID companyId;
     private String companyName;
@@ -17,12 +20,13 @@ public class CompanyResponseDto {
     private Long userId;
 
     public static CompanyResponseDto fromEntity(Company company) {
-        CompanyResponseDto responseDto = new CompanyResponseDto();
-        responseDto.setCompanyId(company.getCompanyId());
-        responseDto.setCompanyName(company.getCompanyName());
-        responseDto.setCompanyAddress(company.getCompanyAddress());
-        responseDto.setCompanyType(company.getCompanyType().name()); // Enum -> String 변환
-        responseDto.setHubId(company.getHubId());
-        return responseDto;
+        return CompanyResponseDto.builder()
+                .companyId(company.getCompanyId())
+                .companyName(company.getCompanyName())
+                .companyAddress(company.getCompanyAddress())
+                .companyType(company.getCompanyType().name()) // Enum -> String 변환
+                .hubId(company.getHubId())
+                .userId(company.getUserId())
+                .build();
     }
 }
