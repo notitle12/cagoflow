@@ -1,4 +1,4 @@
-package com.spring_cloud.eureka.client.company.infrastructure.client;
+package com.spring_cloud.eureka.client.company.application.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
