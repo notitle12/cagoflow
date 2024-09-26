@@ -1,6 +1,6 @@
-# CAGOFLOW: 물류 관리 시스템
+# CARGOFLOW: 물류 관리 시스템
 <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
-<img src="https://capsule-render.vercel.app/api?type=wave&color=auto&height=300&section=header&text=CAGOFLOW&fontSize=90" />
+<img src="https://capsule-render.vercel.app/api?type=wave&color=auto&height=300&section=header&text=CARGOFLOW&fontSize=90" />
 
 ## :mortar_board: 목차
 [1. 개요](#1-개요)
@@ -17,7 +17,7 @@
 
 ## 1. 개요
 ### :computer: 프로젝트 개요
-물류 관리 시스템(Logistics Management System) **CAGOFLOW** 은 물류 프로세스를 관리하는 시스템으로, **허브**, **업체**, **상품**, **주문** 등의 정보를 효율적으로 연동하고 검색할 수 있는 기능을 제공합니다.  
+물류 관리 시스템(Logistics Management System) **CARGOFLOW** 은 물류 프로세스를 관리하는 시스템으로, **허브**, **업체**, **상품**, **주문** 등의 정보를 효율적으로 연동하고 검색할 수 있는 기능을 제공합니다.  
 이 프로젝트는 **Spring Cloud**, **FeignClient**, **Eureka**, **Config Server**, **API Gateway** 등의 기술을 활용하여 마이크로서비스 간 독립성을 유지하며, **도메인 주도 설계**(**DDD**)를 적용하여 개발되었습니다. 또한 외부 서비스와의 데이터 통신을 원활하게 처리하는 것을 목표로 했습니다.
 
 ### 프로젝트 진행 배경 및 기간
